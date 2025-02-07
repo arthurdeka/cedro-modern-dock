@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane prefHeight="123.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.DockController">
+   <children>
+      <HBox fx:id="hBoxContainer" layoutX="54.0" layoutY="27.0" prefHeight="70.0" prefWidth="492.0" />
+   </children>
+</AnchorPane>
