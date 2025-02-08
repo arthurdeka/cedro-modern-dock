@@ -12,6 +12,6 @@
             <Font size="32.0" />
          </font>
       </Label>
-      <Button fx:id="addProgramButton" layoutX="428.0" layoutY="96.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="144.0" text="Add Program" />
+      <Button fx:id="addProgramButton" layoutX="428.0" layoutY="96.0" mnemonicParsing="false" onAction="#handleAddProgram" prefHeight="32.0" prefWidth="144.0" text="Add Program" />
    </children>
 </AnchorPane>

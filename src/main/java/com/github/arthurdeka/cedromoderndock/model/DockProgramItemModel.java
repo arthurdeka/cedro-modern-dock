@@ -1,10 +1,14 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
-public class DockSettingsItemModel implements DockItem{
+public class DockProgramItemModel implements DockItem{
 
-    private String label = "Settings";
-    private String iconPath = "/com/github/arthurdeka/cedromoderndock/icons/settings.png";;
+    private String label = "";
+    private String exePath = "";
 
+    public DockProgramItemModel(String label, String exePath) {
+        this.label = label;
+        this.exePath = exePath;
+    }
 
     @Override
     public String getLabel() {
@@ -13,7 +17,7 @@ public class DockSettingsItemModel implements DockItem{
 
     @Override
     public String getPath() {
-        return iconPath;
+        return exePath;
     }
 
     @Override
@@ -23,11 +27,11 @@ public class DockSettingsItemModel implements DockItem{
 
     @Override
     public void setPath(String path) {
-        this.iconPath = path;
+        this.exePath = path;
     }
 
     @Override
     public void performAction() {
-        System.out.println("Abrindo janela de configurações...");
+        System.out.println(label + " Clicked");
     }
 }

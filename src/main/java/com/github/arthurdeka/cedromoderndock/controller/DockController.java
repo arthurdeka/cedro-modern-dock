@@ -3,11 +3,11 @@ package com.github.arthurdeka.cedromoderndock.controller;
 import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.DockItem;
 import com.github.arthurdeka.cedromoderndock.model.DockModel;
+import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
-import javafx.event.ActionEvent;
+import com.github.arthurdeka.cedromoderndock.util.WindowsIconExtractor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 
 public class DockController {
 
@@ -28,39 +27,69 @@ public class DockController {
     // Run when FXML is loaded
     public void initialize() {
         model = new DockModel();
-        model.loadDefaultItems();
 
+        model.loadDefaultItems();
         updateDockUI();
+
     }
 
     private void updateDockUI() {
+        hBoxContainer.getChildren().clear();
+
+
         for(DockItem item : model.getItems()) {
             Button button = createButton(item);
             hBoxContainer.getChildren().add(button);
         }
+
     }
 
     private Button createButton(DockItem item) {
 
-        Image icon = new Image(getClass().getResourceAsStream(item.getIconPath()));
-        ImageView imageView = new ImageView(icon);
+        if (item instanceof DockSettingsItemModel) {
+            Image icon = new Image(getClass().getResourceAsStream(item.getPath()));
+            ImageView imageView = new ImageView(icon);
 
-        imageView.setFitWidth(24);
-        imageView.setFitHeight(24);
+            imageView.setFitWidth(24);
+            imageView.setFitHeight(24);
 
-        Button button = new Button(item.getLabel());
-        button.setGraphic(imageView);
+            Button button = new Button(item.getLabel());
+            button.setGraphic(imageView);
 
-        // if the button is the settings button, a different setOnAction is defined
-        button.setOnAction(e -> {
-            if (item instanceof DockSettingsItemModel) {
-                openSettingsWindow(); //
-            } else {
-                item.performAction(); //
+            button.setOnAction(e -> openSettingsWindow());
+            return button;
+
+
+        } else if (item instanceof DockProgramItemModel) {
+            String exePath = item.getPath();
+
+            ImageView imageView = null;
+
+
+            try {
+                Image icon = WindowsIconExtractor.getExeIcon(exePath);
+                imageView = new ImageView((icon));
+            } catch (Exception e) {
+                System.out.println("ERRO AQUI");
             }
-        });
 
-        return button;
+            imageView.setFitWidth(24);
+            imageView.setFitHeight(24);
+
+            Button button = new Button(item.getLabel());
+            button.setGraphic(imageView);
+
+            button.setOnAction(e -> item.performAction());
+            return button;
+
+
+        } else {
+            Button button = new Button(item.getLabel());
+            return button;
+
+        }
+
+
     }
 
     private void openSettingsWindow() {
@@ -69,6 +98,8 @@ public class DockController {
             Parent root = loader.load();
 
             SettingsController settingsController = loader.getController();
+            settingsController.setDockModel(model);
+            settingsController.setDockController(this);
 
             Stage stage = new Stage();
             stage.setTitle("Settings Window");
@@ -81,5 +112,8 @@ public class DockController {
 
     }
 
+    public void refreshUI() {
+        updateDockUI();
+    }
 }
 

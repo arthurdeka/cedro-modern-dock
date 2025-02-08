@@ -3,10 +3,10 @@ package com.github.arthurdeka.cedromoderndock.model;
 public interface DockItem {
 
     String getLabel();
-    String getIconPath();
+    String getPath();
 
     void setLabel(String label);
-    void setIconPath(String iconPath);
+    void setPath(String path);
 
     // Action to perform when object is clicked.
     void performAction();
