@@ -16,6 +16,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 
 public class DockController {
 
@@ -31,6 +33,18 @@ public class DockController {
         model.loadDefaultItems();
         updateDockUI();
 
+    }
+
+    public void addDockItem(DockItem item) {
+        model.addItem(item);
+    }
+
+    public void removeDockItem(int index) {
+        model.removeItem(index);
+    }
+
+    public List<DockItem> getDockItems() {
+        return model.getItems();
     }
 
     private void updateDockUI() {
@@ -98,8 +112,8 @@ public class DockController {
             Parent root = loader.load();
 
             SettingsController settingsController = loader.getController();
-            settingsController.setDockModel(model);
             settingsController.setDockController(this);
+            settingsController.addDockItemsToListView(this.getDockItems());
 
             Stage stage = new Stage();
             stage.setTitle("Settings Window");
@@ -115,5 +129,6 @@ public class DockController {
     public void refreshUI() {
         updateDockUI();
     }
+
 }
 

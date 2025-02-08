@@ -16,8 +16,8 @@ public class DockModel {
 
     }
 
-    public void removeItem(DockItem item) {
-        items.add(item);
+    public void removeItem(int index) {
+        items.remove(index);
 
     }
 
