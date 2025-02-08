@@ -35,8 +35,7 @@ public class SettingsController {
 
     // Run when FXML is loaded
     public void initialize() {
-        System.out.println("oi");
-
+        System.out.println("[Initializing] SettingsController");
     }
 
 
@@ -92,7 +91,7 @@ public class SettingsController {
             alert.showAndWait();
 
         } else {
-            // deletes selected option 
+            // deletes selected option
             System.out.println("[listView] Removing item on index: " + selectedIdx);
 
             dockController.removeDockItem(selectedIdx);
