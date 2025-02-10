@@ -4,6 +4,8 @@ import com.github.arthurdeka.cedromoderndock.model.DockItem;
 import com.github.arthurdeka.cedromoderndock.model.DockModel;
 import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -36,6 +38,30 @@ public class SettingsController {
     // Run when FXML is loaded
     public void initialize() {
         System.out.println("[Initializing] SettingsController");
+
+        // add listener to listView
+        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
+                handleListViewItemSelection(newValue);
+            }
+        });
+
+    }
+
+    private void handleListViewItemSelection(Object newValue) {
+        int selectedIdx = listView.getSelectionModel().getSelectedIndex();
+        DockItem item = dockController.getDockItems().get(selectedIdx);
+
+        // disables removeProgramButton if the selected item is the Settings item
+        if (item instanceof DockSettingsItemModel) {
+            removeProgramButton.setDisable(true);
+        } else {
+            removeProgramButton.setDisable(false);
+
+        }
+
+
     }
 
 
@@ -82,24 +108,13 @@ public class SettingsController {
     private void handleRemoveProgram() {
         int selectedIdx = listView.getSelectionModel().getSelectedIndex();
 
-        // blocks from deleting the settings option
-        DockItem item = dockController.getDockItems().get(selectedIdx);
-        if (item instanceof DockSettingsItemModel) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("You can't delete the settings option");
-            alert.showAndWait();
+        // deletes selected option
+        System.out.println("[listView] Removing item on index: " + selectedIdx);
 
-        } else {
-            // deletes selected option
-            System.out.println("[listView] Removing item on index: " + selectedIdx);
+        dockController.removeDockItem(selectedIdx);
+        listItems.remove(selectedIdx);
 
-            dockController.removeDockItem(selectedIdx);
-            listItems.remove(selectedIdx);
-
-            dockController.refreshUI();
-
-        }
+        dockController.refreshUI();
 
     }
 

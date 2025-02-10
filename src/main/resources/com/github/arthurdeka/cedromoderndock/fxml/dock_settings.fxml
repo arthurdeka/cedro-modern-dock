@@ -15,6 +15,6 @@
       </Label>
       <Button fx:id="addProgramButton" layoutX="428.0" layoutY="96.0" mnemonicParsing="false" onAction="#handleAddProgram" prefHeight="32.0" prefWidth="144.0" text="Add Program" />
       <ListView fx:id="listView" layoutX="22.0" layoutY="84.0" prefHeight="264.0" prefWidth="297.0" />
-      <Button fx:id="removeProgramButton" layoutX="428.0" layoutY="146.0" mnemonicParsing="false" onAction="#handleRemoveProgram" prefHeight="32.0" prefWidth="144.0" text="Remove Program" />
+      <Button fx:id="removeProgramButton" disable="true" layoutX="428.0" layoutY="146.0" mnemonicParsing="false" onAction="#handleRemoveProgram" prefHeight="32.0" prefWidth="144.0" text="Remove Item" />
    </children>
 </AnchorPane>
