@@ -16,7 +16,7 @@
       <Button fx:id="addProgramButton" layoutX="428.0" layoutY="96.0" mnemonicParsing="false" onAction="#handleAddProgram" prefHeight="32.0" prefWidth="144.0" text="Add Program" />
       <ListView fx:id="listView" layoutX="22.0" layoutY="84.0" prefHeight="248.0" prefWidth="297.0" />
       <Button fx:id="removeProgramButton" disable="true" layoutX="428.0" layoutY="145.0" mnemonicParsing="false" onAction="#handleRemoveProgram" prefHeight="32.0" prefWidth="144.0" text="Remove Item" />
-      <Button fx:id="moveItemUpButton" layoutX="22.0" layoutY="344.0" mnemonicParsing="false" onAction="#HandleMoveItem" prefHeight="32.0" prefWidth="144.0" text="Move Item Up" />
-      <Button fx:id="moveItemDownButton" layoutX="175.0" layoutY="344.0" mnemonicParsing="false" onAction="#HandleMoveItem" prefHeight="32.0" prefWidth="144.0" text="Move Item Down" />
+      <Button fx:id="moveItemUpButton" disable="true" layoutX="22.0" layoutY="344.0" mnemonicParsing="false" onAction="#HandleMoveItem" prefHeight="32.0" prefWidth="144.0" text="Move Item Up" />
+      <Button fx:id="moveItemDownButton" disable="true" layoutX="175.0" layoutY="344.0" mnemonicParsing="false" onAction="#HandleMoveItem" prefHeight="32.0" prefWidth="144.0" text="Move Item Down" />
    </children>
 </AnchorPane>

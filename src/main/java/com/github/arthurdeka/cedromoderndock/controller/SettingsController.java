@@ -63,6 +63,13 @@ public class SettingsController {
 
         }
 
+        // enables moveItemUpButton and moveItemDownButton if they are disabled
+        if (moveItemDownButton.isDisabled() || moveItemUpButton.isDisabled()) {
+
+            moveItemDownButton.setDisable(false);
+            moveItemUpButton.setDisable(false);
+        }
+
         // disables moveItemUpButton if item is already at top or bottom of the lsit.
         if (selectedIdx == 0) {
             moveItemUpButton.setDisable(true);
