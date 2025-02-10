@@ -1,10 +1,7 @@
 package com.github.arthurdeka.cedromoderndock.controller;
 
 import com.github.arthurdeka.cedromoderndock.App;
-import com.github.arthurdeka.cedromoderndock.model.DockItem;
-import com.github.arthurdeka.cedromoderndock.model.DockModel;
-import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
-import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
+import com.github.arthurdeka.cedromoderndock.model.*;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconExtractor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,6 +88,20 @@ public class DockController {
             } catch (Exception e) {
                 System.out.println("ERRO AQUI");
             }
+
+            imageView.setFitWidth(24);
+            imageView.setFitHeight(24);
+
+            Button button = new Button(item.getLabel());
+            button.setGraphic(imageView);
+
+            button.setOnAction(e -> item.performAction());
+            return button;
+
+
+        } else if (item instanceof DockWindowsModuleItemModel) {
+            Image icon = new Image(getClass().getResourceAsStream(item.getPath()));
+            ImageView imageView = new ImageView(icon);
 
             imageView.setFitWidth(24);
             imageView.setFitHeight(24);

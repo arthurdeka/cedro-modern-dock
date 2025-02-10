@@ -1,5 +1,6 @@
 package com.github.arthurdeka.cedromoderndock.controller;
 
+import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.DockItem;
 import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
@@ -9,6 +10,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.FileChooser;
@@ -98,6 +102,33 @@ public class SettingsController {
         // list view will always follow ObservableList<String> listItems
         listView.setItems(listItems);
 
+    }
+
+    @FXML
+    private void openAddWindowsModuleWindow() {
+        // opens AddWindowsModulesWindowView and creates a new instance of AddWindowsModulesModalController
+        try {
+
+            // Get reference to the current window/stage
+            Stage currentStage = (Stage) listView.getScene().getWindow();
+
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/AddWindowsModulesModalView.fxml"));
+            Parent root = loader.load();
+
+            AddWindowsModulesModalController addWindowsModulesModalController = loader.getController();
+            addWindowsModulesModalController.setDockController(dockController);
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Windows Module");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Close the current window
+            currentStage.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
