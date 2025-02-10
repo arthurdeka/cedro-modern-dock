@@ -1,6 +1,7 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DockModel {
@@ -23,6 +24,10 @@ public class DockModel {
 
     public void loadDefaultItems() {
         items.add(new DockSettingsItemModel());
+    }
+
+    public void swapItems(int firstItemIdx, int secondItemIdx) {
+        Collections.swap(items, firstItemIdx, secondItemIdx);
     }
 
 }

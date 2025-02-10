@@ -47,6 +47,11 @@ public class DockController {
         return model.getItems();
     }
 
+    public void swapItems(int firstItemIdx, int secondItemIdx) {
+        model.swapItems(firstItemIdx, secondItemIdx);
+        updateDockUI();
+    }
+
     private void updateDockUI() {
         hBoxContainer.getChildren().clear();
 

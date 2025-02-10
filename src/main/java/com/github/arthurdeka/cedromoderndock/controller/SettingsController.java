@@ -1,16 +1,14 @@
 package com.github.arthurdeka.cedromoderndock.controller;
 
 import com.github.arthurdeka.cedromoderndock.model.DockItem;
-import com.github.arthurdeka.cedromoderndock.model.DockModel;
 import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.FileChooser;
@@ -18,7 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SettingsController {
@@ -30,6 +28,10 @@ public class SettingsController {
     private Button addProgramButton;
     @FXML
     private Button removeProgramButton;
+    @FXML
+    private Button moveItemUpButton;
+    @FXML
+    private Button moveItemDownButton;
 
     private DockController dockController;
 
@@ -43,13 +45,13 @@ public class SettingsController {
         listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
-                handleListViewItemSelection(newValue);
+                handleListViewItemSelection();
             }
         });
 
     }
 
-    private void handleListViewItemSelection(Object newValue) {
+    private void handleListViewItemSelection() {
         int selectedIdx = listView.getSelectionModel().getSelectedIndex();
         DockItem item = dockController.getDockItems().get(selectedIdx);
 
@@ -61,9 +63,23 @@ public class SettingsController {
 
         }
 
+        // disables moveItemUpButton if item is already at top or bottom of the lsit.
+        if (selectedIdx == 0) {
+            moveItemUpButton.setDisable(true);
+        } else {
+            moveItemUpButton.setDisable(false);
+        }
+
+        // disables moveItemDownButton if item is already at top or bottom of the lsit.
+        if (selectedIdx == listItems.size() - 1) {
+            moveItemDownButton.setDisable(true);
+
+        } else {
+            moveItemDownButton.setDisable(false);
+        }
+
 
     }
-
 
     public void addDockItemsToListView(List<DockItem> DockItems) {
 
@@ -118,6 +134,30 @@ public class SettingsController {
 
     }
 
+    @FXML
+    private void HandleMoveItem(ActionEvent event) {
+        int selectedIdx = listView.getSelectionModel().getSelectedIndex();
+
+        if (event.getSource() == moveItemUpButton) {
+            System.out.println("[listView] moving item up");
+            Collections.swap(listItems, selectedIdx, selectedIdx - 1);
+            dockController.swapItems(selectedIdx, selectedIdx - 1);
+
+            // set new position as selected
+            listView.getSelectionModel().select(selectedIdx - 1);
+
+        } else {
+            System.out.println("[listView] moving item down");
+            Collections.swap(listItems, selectedIdx, selectedIdx + 1);
+            dockController.swapItems(selectedIdx, selectedIdx + 1);
+
+            // set new position as selected
+            listView.getSelectionModel().select(selectedIdx + 1);
+
+        }
+
+
+    }
 
     public void setDockController(DockController dockController) {
         this.dockController = dockController;
