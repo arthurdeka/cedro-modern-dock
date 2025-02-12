@@ -15,7 +15,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         System.out.println("Olá!");
-        FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/dock.fxml"));
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/DockView.fxml"));
         Scene scene = new Scene(loader.load());
 
         DockController dockController = loader.getController();

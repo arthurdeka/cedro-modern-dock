@@ -127,7 +127,7 @@ public class DockController {
 
     private void openSettingsWindow() {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/dock_settings.fxml"));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/DockSettingsView.fxml"));
             Parent root = loader.load();
 
             SettingsController settingsController = loader.getController();
@@ -147,7 +147,7 @@ public class DockController {
 
     public void refreshUI() {
         updateDockUI();
-        // resize window
+        // resize window to account for DockItem additions or removing
         stage.sizeToScene();
     }
 

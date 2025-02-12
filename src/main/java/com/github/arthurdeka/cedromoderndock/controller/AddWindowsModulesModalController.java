@@ -68,7 +68,7 @@ public class AddWindowsModulesModalController {
             // Get reference to the current window/stage
             Stage currentStage = (Stage) listView.getScene().getWindow();
 
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/dock_settings.fxml"));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/DockSettingsView.fxml"));
             Parent root = loader.load();
 
             SettingsController settingsController = loader.getController();

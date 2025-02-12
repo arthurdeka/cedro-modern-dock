@@ -194,6 +194,8 @@ public class SettingsController {
 
         }
 
+        handleListViewItemSelection();
+
 
     }
 
