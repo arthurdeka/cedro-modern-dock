@@ -22,6 +22,7 @@ public class DockController {
     private HBox hBoxContainer;
 
     private DockModel model;
+    private Stage stage;
 
     // Run when FXML is loaded
     public void initialize() {
@@ -96,6 +97,8 @@ public class DockController {
             button.setGraphic(imageView);
 
             button.setOnAction(e -> item.performAction());
+
+
             return button;
 
 
@@ -144,6 +147,12 @@ public class DockController {
 
     public void refreshUI() {
         updateDockUI();
+        // resize window
+        stage.sizeToScene();
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
 }
