@@ -71,6 +71,7 @@ public class DockController {
             imageView.setFitHeight(24);
 
             Button button = new Button(item.getLabel());
+            button.getStyleClass().add("dock-button");
             button.setGraphic(imageView);
 
             button.setOnAction(e -> openSettingsWindow());
@@ -87,13 +88,14 @@ public class DockController {
                 Image icon = WindowsIconExtractor.getExeIcon(exePath);
                 imageView = new ImageView((icon));
             } catch (Exception e) {
-                System.out.println("ERRO AQUI");
+                System.out.println("ERRO - It was not possible to load the program's icon");
             }
 
             imageView.setFitWidth(24);
             imageView.setFitHeight(24);
 
             Button button = new Button(item.getLabel());
+            button.getStyleClass().add("dock-button");
             button.setGraphic(imageView);
 
             button.setOnAction(e -> item.performAction());
@@ -110,6 +112,7 @@ public class DockController {
             imageView.setFitHeight(24);
 
             Button button = new Button(item.getLabel());
+            button.getStyleClass().add("dock-button");
             button.setGraphic(imageView);
 
             button.setOnAction(e -> item.performAction());
@@ -117,8 +120,7 @@ public class DockController {
 
 
         } else {
-            Button button = new Button(item.getLabel());
-            return button;
+            return null;
 
         }
 

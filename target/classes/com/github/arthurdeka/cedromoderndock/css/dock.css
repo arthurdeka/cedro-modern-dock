@@ -1,10 +1,23 @@
 #myAnchorPane {
     -fx-background-color: transparent;
+
 }
 
 #MyHBox {
     -fx-background-color: black;
 
+}
+
+.dock-button {
+    -fx-content-display: graphic-only;
+    -fx-background-color: transparent;
+
+}
+
+.dock-button:hover {
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+    -fx-scale-z: 1.5;
 
 }
 
