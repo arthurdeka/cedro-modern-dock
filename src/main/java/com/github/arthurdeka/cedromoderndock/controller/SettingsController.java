@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class SettingsController {
 
+    // Icons tab
     @FXML
     private ListView listView;
 
@@ -37,21 +39,41 @@ public class SettingsController {
     @FXML
     private Button moveItemDownButton;
 
+    private ObservableList<String> listItems = FXCollections.observableArrayList();
+
+    // Icons customization tab
+
+    @FXML
+    private Slider iconSizeSlider;
+
+    // misc
     private DockController dockController;
 
-    private ObservableList<String> listItems = FXCollections.observableArrayList();
 
     // Run when FXML is loaded
     public void initialize() {
         System.out.println("[Initializing] SettingsController");
 
+    }
+
+    public void handleInitialization() {
+
         // add listener to listView
+        addDockItemsToListView(dockController.getDockItems());
         listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
                 handleListViewItemSelection();
             }
         });
+
+
+        // add listener to sliders
+        iconSizeSlider.setValue(dockController.getDockIconsSize());
+        iconSizeSlider.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
+            int value = (int) iconSizeSlider.getValue();
+            handleSetIconSizeSlider(value);
+        }));
 
     }
 
@@ -86,7 +108,7 @@ public class SettingsController {
 
     }
 
-    public void addDockItemsToListView(List<DockItem> DockItems) {
+    private void addDockItemsToListView(List<DockItem> DockItems) {
 
         for (DockItem item : DockItems) {
             listItems.add(item.getLabel());
@@ -97,6 +119,8 @@ public class SettingsController {
         listView.setItems(listItems);
 
     }
+
+    // Icons tab
 
     @FXML
     private void openAddWindowsModuleWindow() {
@@ -167,7 +191,7 @@ public class SettingsController {
     }
 
     @FXML
-    private void HandleMoveItem(ActionEvent event) {
+    private void handleMoveItem(ActionEvent event) {
         int selectedIdx = listView.getSelectionModel().getSelectedIndex();
 
         if (event.getSource() == moveItemUpButton) {
@@ -192,6 +216,15 @@ public class SettingsController {
 
 
     }
+
+    // Icons customization tab
+
+    @FXML
+    private void handleSetIconSizeSlider(int value) {
+        dockController.setDockIconsSize(value);
+    }
+
+    // misc ======
 
     public void setDockController(DockController dockController) {
         this.dockController = dockController;

@@ -12,6 +12,8 @@
     -fx-content-display: graphic-only;
     -fx-background-color: transparent;
 
+    -fx-cursor: hand;
+
     transition-property: -fx-scale-x, -fx-scale-y;
     transition-duration: 0.3s;
     -fx-scale-x: 1.0;

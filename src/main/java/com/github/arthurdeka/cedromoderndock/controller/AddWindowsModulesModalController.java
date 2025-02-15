@@ -73,7 +73,7 @@ public class AddWindowsModulesModalController {
 
             SettingsController settingsController = loader.getController();
             settingsController.setDockController(dockController);
-            settingsController.addDockItemsToListView(dockController.getDockItems());
+            settingsController.handleInitialization();
 
             Stage stage = new Stage();
             stage.setTitle("Settings Window");

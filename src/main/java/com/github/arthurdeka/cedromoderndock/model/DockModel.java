@@ -7,6 +7,7 @@ import java.util.List;
 public class DockModel {
 
     private List<DockItem> items = new ArrayList<>();
+    private Integer iconsSize = 24;
 
     public List<DockItem> getItems() {
         return items;
@@ -28,6 +29,14 @@ public class DockModel {
 
     public void swapItems(int firstItemIdx, int secondItemIdx) {
         Collections.swap(items, firstItemIdx, secondItemIdx);
+    }
+
+    public Integer getIconsSize() {
+        return iconsSize;
+    }
+
+    public void setIconsSize(Integer iconsSize) {
+        this.iconsSize = iconsSize;
     }
 
 }

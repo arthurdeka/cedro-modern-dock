@@ -67,8 +67,8 @@ public class DockController {
             Image icon = new Image(getClass().getResourceAsStream(item.getPath()));
             ImageView imageView = new ImageView(icon);
 
-            imageView.setFitWidth(24);
-            imageView.setFitHeight(24);
+            imageView.setFitWidth(model.getIconsSize());
+            imageView.setFitHeight(model.getIconsSize());
 
             Button button = new Button(item.getLabel());
             button.getStyleClass().add("dock-button");
@@ -88,11 +88,11 @@ public class DockController {
                 Image icon = WindowsIconExtractor.getExeIcon(exePath);
                 imageView = new ImageView((icon));
             } catch (Exception e) {
-                System.out.println("ERRO - It was not possible to load the program's icon");
+                System.out.println("ERROR - It was not possible to load the program's icon");
             }
 
-            imageView.setFitWidth(24);
-            imageView.setFitHeight(24);
+            imageView.setFitWidth(model.getIconsSize());
+            imageView.setFitHeight(model.getIconsSize());
 
             Button button = new Button(item.getLabel());
             button.getStyleClass().add("dock-button");
@@ -108,8 +108,8 @@ public class DockController {
             Image icon = new Image(getClass().getResourceAsStream(item.getPath()));
             ImageView imageView = new ImageView(icon);
 
-            imageView.setFitWidth(24);
-            imageView.setFitHeight(24);
+            imageView.setFitWidth(model.getIconsSize());
+            imageView.setFitHeight(model.getIconsSize());
 
             Button button = new Button(item.getLabel());
             button.getStyleClass().add("dock-button");
@@ -134,7 +134,7 @@ public class DockController {
 
             SettingsController settingsController = loader.getController();
             settingsController.setDockController(this);
-            settingsController.addDockItemsToListView(this.getDockItems());
+            settingsController.handleInitialization();
 
             Stage stage = new Stage();
             stage.setTitle("Settings Window");
@@ -147,9 +147,18 @@ public class DockController {
 
     }
 
+    public void setDockIconsSize(int iconsSize) {
+        model.setIconsSize(iconsSize);
+        refreshUI();
+    }
+
+    public int getDockIconsSize() {
+        return model.getIconsSize();
+    }
+
     public void refreshUI() {
         updateDockUI();
-        // resize window to account for DockItem additions or removing
+        // resize window to account for DockItem additions or removings
         stage.sizeToScene();
     }
 
