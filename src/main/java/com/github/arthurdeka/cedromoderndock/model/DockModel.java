@@ -8,6 +8,7 @@ public class DockModel {
 
     private List<DockItem> items = new ArrayList<>();
     private Integer iconsSize = 24;
+    private Integer spacingBetweenIcons = 0;
 
     public List<DockItem> getItems() {
         return items;
@@ -39,4 +40,11 @@ public class DockModel {
         this.iconsSize = iconsSize;
     }
 
+    public Integer getSpacingBetweenIcons() {
+        return spacingBetweenIcons;
+    }
+
+    public void setSpacingBetweenIcons(Integer spacingBetweenIcons) {
+        this.spacingBetweenIcons = spacingBetweenIcons;
+    }
 }

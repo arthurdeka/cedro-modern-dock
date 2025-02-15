@@ -52,6 +52,7 @@ public class DockController {
 
     private void updateDockUI() {
         hBoxContainer.getChildren().clear();
+        hBoxContainer.setSpacing(getDockIconsSpacing());
 
 
         for(DockItem item : model.getItems()) {
@@ -156,9 +157,18 @@ public class DockController {
         return model.getIconsSize();
     }
 
+    public void setDockIconsSpacing(int spacingValue) {
+        model.setSpacingBetweenIcons(spacingValue);
+        refreshUI();
+    }
+
+    public int getDockIconsSpacing() {
+        return model.getSpacingBetweenIcons();
+    }
+
     public void refreshUI() {
         updateDockUI();
-        // resize window to account for DockItem additions or removings
+        // resize window to account for DockItem additions or removing
         stage.sizeToScene();
     }
 

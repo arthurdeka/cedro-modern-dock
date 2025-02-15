@@ -41,7 +41,13 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Slider fx:id="iconSizeSlider" layoutX="14.0" layoutY="55.0" max="60.0" min="15.0" prefHeight="37.0" prefWidth="406.0" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="iconSizeSlider" layoutX="14.0" layoutY="55.0" majorTickUnit="5.0" max="60.0" min="15.0" prefHeight="37.0" prefWidth="406.0" showTickLabels="true" showTickMarks="true" />
+                        <Label layoutX="14.0" layoutY="100.0" text="Spacing Between Icons">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Slider fx:id="spacingBetweenIconsSlider" layoutX="14.0" layoutY="130.0" majorTickUnit="5.0" max="30.0" prefHeight="37.0" prefWidth="406.0" showTickLabels="true" showTickMarks="true" />
                      </children>
                   </AnchorPane>
             </content>

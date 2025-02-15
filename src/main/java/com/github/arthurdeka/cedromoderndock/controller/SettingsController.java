@@ -45,6 +45,8 @@ public class SettingsController {
 
     @FXML
     private Slider iconSizeSlider;
+    @FXML
+    private Slider spacingBetweenIconsSlider;
 
     // misc
     private DockController dockController;
@@ -73,6 +75,12 @@ public class SettingsController {
         iconSizeSlider.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
             int value = (int) iconSizeSlider.getValue();
             handleSetIconSizeSlider(value);
+        }));
+
+        spacingBetweenIconsSlider.setValue(dockController.getDockIconsSpacing());
+        spacingBetweenIconsSlider.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
+            int value = (int) spacingBetweenIconsSlider.getValue();
+            handleSetIconsSpacingSlider(value);
         }));
 
     }
@@ -219,10 +227,14 @@ public class SettingsController {
 
     // Icons customization tab
 
-    @FXML
     private void handleSetIconSizeSlider(int value) {
         dockController.setDockIconsSize(value);
     }
+
+    private void handleSetIconsSpacingSlider(int value) {
+        dockController.setDockIconsSpacing(value);
+    }
+
 
     // misc ======
 
