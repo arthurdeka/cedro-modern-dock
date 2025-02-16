@@ -68,7 +68,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Slider fx:id="dockTransparencySlider1" layoutX="14.0" layoutY="142.0" majorTickUnit="10.0" minorTickCount="1" prefHeight="37.0" prefWidth="406.0" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="dockBorderRoundingSlider" layoutX="14.0" layoutY="142.0" majorTickUnit="10.0" max="30.0" minorTickCount="1" prefHeight="37.0" prefWidth="406.0" showTickLabels="true" showTickMarks="true" />
                         <ColorPicker layoutX="14.0" layoutY="244.0" />
                         <Label layoutX="14.0" layoutY="207.0" text="Dock Background Color:">
                            <font>

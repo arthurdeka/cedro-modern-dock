@@ -52,6 +52,8 @@ public class SettingsController {
 
     @FXML
     private Slider dockTransparencySlider;
+    @FXML
+    private Slider dockBorderRoundingSlider;
 
     // misc
     private DockController dockController;
@@ -94,7 +96,14 @@ public class SettingsController {
             handleSetDockTransparencySlider(value);
         }));
 
+        dockBorderRoundingSlider.setValue(dockController.getDockBorderRounding());
+        dockBorderRoundingSlider.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
+            int value = (int) dockBorderRoundingSlider.getValue();
+            handleSetDockBorderRoundingSlider(value);
+        }));
+
     }
+
 
     private void handleListViewItemSelection() {
         int selectedIdx = listView.getSelectionModel().getSelectedIndex();
@@ -107,7 +116,7 @@ public class SettingsController {
             removeProgramButton.setDisable(false);
 
         }
-        
+
 
         // disables moveItemUpButton if item is already at top or bottom of the lsit.
         if (selectedIdx == 0) {
@@ -252,6 +261,9 @@ public class SettingsController {
         dockController.setDockTransparency(value);
     }
 
+    private void handleSetDockBorderRoundingSlider(int value) {
+        dockController.setDockBorderRounding(value);
+    }
 
     // misc ======
 

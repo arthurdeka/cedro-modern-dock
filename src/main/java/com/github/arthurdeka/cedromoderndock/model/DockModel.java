@@ -7,9 +7,10 @@ import java.util.List;
 public class DockModel {
 
     private List<DockItem> items = new ArrayList<>();
-    private Integer iconsSize = 24;
-    private Integer spacingBetweenIcons = 0;
-    private Double DockTransparency = 0.7;
+    private int iconsSize = 24;
+    private int spacingBetweenIcons = 0;
+    private double dockTransparency = 0.7;
+    private int dockBorderRounding = 10;
 
     public List<DockItem> getItems() {
         return items;
@@ -50,10 +51,20 @@ public class DockModel {
     }
 
     public Double getDockTransparency() {
-        return DockTransparency;
+        return dockTransparency;
     }
 
     public void setDockTransparency(Double dockTransparency) {
-        DockTransparency = dockTransparency;
+        this.dockTransparency = dockTransparency;
     }
+
+    public int getDockBorderRounding() {
+        return dockBorderRounding;
+    }
+
+    public void setDockBorderRounding(int dockBorderRounding) {
+        this.dockBorderRounding = dockBorderRounding;
+    }
+
+
 }

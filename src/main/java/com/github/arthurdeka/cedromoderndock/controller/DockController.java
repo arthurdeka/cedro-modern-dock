@@ -52,7 +52,10 @@ public class DockController {
     public void updateDockUI() {
         hBoxContainer.getChildren().clear();
         hBoxContainer.setSpacing(getDockIconsSpacing());
-        hBoxContainer.setStyle("-fx-background-color: rgba(0, 0, 0, " + model.getDockTransparency() + ");");
+        hBoxContainer.setStyle(
+                "-fx-background-color: rgba(0, 0, 0, " + model.getDockTransparency() + ");" +
+                "-fx-background-radius: " + model.getDockBorderRounding() + ";"
+        );
 
         for(DockItem item : model.getItems()) {
             Button button = createButton(item);
@@ -180,6 +183,16 @@ public class DockController {
         double doubleValue = (double) value / 100;
         model.setDockTransparency(doubleValue);
         updateDockUI();
+    }
+
+    public void setDockBorderRounding(int value) {
+        model.setDockBorderRounding(value);
+        updateDockUI();
+
+    }
+
+    public int getDockBorderRounding() {
+        return model.getDockBorderRounding();
     }
 
     public void setStage(Stage stage) {
