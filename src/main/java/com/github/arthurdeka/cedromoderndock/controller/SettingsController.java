@@ -48,6 +48,11 @@ public class SettingsController {
     @FXML
     private Slider spacingBetweenIconsSlider;
 
+    // Dock Customization tab
+
+    @FXML
+    private Slider dockTransparencySlider;
+
     // misc
     private DockController dockController;
 
@@ -81,6 +86,12 @@ public class SettingsController {
         spacingBetweenIconsSlider.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
             int value = (int) spacingBetweenIconsSlider.getValue();
             handleSetIconsSpacingSlider(value);
+        }));
+
+        dockTransparencySlider.setValue(dockController.getDockTransparency());
+        dockTransparencySlider.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
+            int value = (int) dockTransparencySlider.getValue();
+            handleSetDockTransparencySlider(value);
         }));
 
     }
@@ -233,6 +244,12 @@ public class SettingsController {
 
     private void handleSetIconsSpacingSlider(int value) {
         dockController.setDockIconsSpacing(value);
+    }
+
+    // dock customization tab
+
+    private void handleSetDockTransparencySlider(int value) {
+        dockController.setDockTransparency(value);
     }
 
 

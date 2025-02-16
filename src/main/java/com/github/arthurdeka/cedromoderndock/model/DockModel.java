@@ -9,6 +9,7 @@ public class DockModel {
     private List<DockItem> items = new ArrayList<>();
     private Integer iconsSize = 24;
     private Integer spacingBetweenIcons = 0;
+    private Double DockTransparency = 0.7;
 
     public List<DockItem> getItems() {
         return items;
@@ -46,5 +47,13 @@ public class DockModel {
 
     public void setSpacingBetweenIcons(Integer spacingBetweenIcons) {
         this.spacingBetweenIcons = spacingBetweenIcons;
+    }
+
+    public Double getDockTransparency() {
+        return DockTransparency;
+    }
+
+    public void setDockTransparency(Double dockTransparency) {
+        DockTransparency = dockTransparency;
     }
 }

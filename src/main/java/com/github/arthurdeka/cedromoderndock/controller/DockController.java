@@ -53,7 +53,7 @@ public class DockController {
     private void updateDockUI() {
         hBoxContainer.getChildren().clear();
         hBoxContainer.setSpacing(getDockIconsSpacing());
-
+        hBoxContainer.setStyle("-fx-background-color: rgba(0, 0, 0, " + model.getDockTransparency() + ");");
 
         for(DockItem item : model.getItems()) {
             Button button = createButton(item);
@@ -164,6 +164,20 @@ public class DockController {
 
     public int getDockIconsSpacing() {
         return model.getSpacingBetweenIcons();
+    }
+
+    public int getDockTransparency() {
+        // this method converts the transparency scale from 0.0-1.0 to 0-100
+        int intValue = (int) (model.getDockTransparency() * 100);
+        return intValue;
+    }
+
+    public void setDockTransparency(int value) {
+        // this methode receives value from a slider, so it needs to
+        // convert the value from int to double
+        double doubleValue = (double) value / 100;
+        model.setDockTransparency(doubleValue);
+        refreshUI();
     }
 
     public void refreshUI() {

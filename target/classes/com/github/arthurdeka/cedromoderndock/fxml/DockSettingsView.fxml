@@ -54,7 +54,15 @@
           </Tab>
             <Tab text="Dock Customization">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="24.0" text="Dock Transparency">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Slider fx:id="dockTransparencySlider" layoutX="14.0" layoutY="54.0" majorTickUnit="10.0" minorTickCount="1" prefHeight="37.0" prefWidth="406.0" showTickLabels="true" showTickMarks="true" />
+                     </children></AnchorPane>
                </content>
             </Tab>
             <Tab text="Dock Positioning">
