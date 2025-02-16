@@ -191,7 +191,7 @@ public class SettingsController {
             stage.close();
         }
 
-        dockController.refreshUI();
+        dockController.updateDockUI();
 
     }
 
@@ -205,7 +205,7 @@ public class SettingsController {
         dockController.removeDockItem(selectedIdx);
         listItems.remove(selectedIdx);
 
-        dockController.refreshUI();
+        dockController.updateDockUI();
 
     }
 

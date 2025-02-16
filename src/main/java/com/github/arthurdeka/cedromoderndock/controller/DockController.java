@@ -25,12 +25,11 @@ public class DockController {
     private Stage stage;
 
     // Run when FXML is loaded
-    public void initialize() {
+    public void handleInitialization() {
         model = new DockModel();
 
         model.loadDefaultItems();
         updateDockUI();
-
     }
 
     public void addDockItem(DockItem item) {
@@ -50,7 +49,7 @@ public class DockController {
         updateDockUI();
     }
 
-    private void updateDockUI() {
+    public void updateDockUI() {
         hBoxContainer.getChildren().clear();
         hBoxContainer.setSpacing(getDockIconsSpacing());
         hBoxContainer.setStyle("-fx-background-color: rgba(0, 0, 0, " + model.getDockTransparency() + ");");
@@ -59,6 +58,9 @@ public class DockController {
             Button button = createButton(item);
             hBoxContainer.getChildren().add(button);
         }
+
+        // resize window to account for DockItem additions or removing
+        stage.sizeToScene();
 
     }
 
@@ -150,7 +152,7 @@ public class DockController {
 
     public void setDockIconsSize(int iconsSize) {
         model.setIconsSize(iconsSize);
-        refreshUI();
+        updateDockUI();
     }
 
     public int getDockIconsSize() {
@@ -159,7 +161,7 @@ public class DockController {
 
     public void setDockIconsSpacing(int spacingValue) {
         model.setSpacingBetweenIcons(spacingValue);
-        refreshUI();
+        updateDockUI();
     }
 
     public int getDockIconsSpacing() {
@@ -177,13 +179,7 @@ public class DockController {
         // convert the value from int to double
         double doubleValue = (double) value / 100;
         model.setDockTransparency(doubleValue);
-        refreshUI();
-    }
-
-    public void refreshUI() {
         updateDockUI();
-        // resize window to account for DockItem additions or removing
-        stage.sizeToScene();
     }
 
     public void setStage(Stage stage) {

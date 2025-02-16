@@ -40,22 +40,22 @@ public class AddWindowsModulesModalController {
 
         if (selectedIdx == 0) {
             dockController.addDockItem(new DockWindowsModuleItemModel("My Computer", "mypc"));
-            dockController.refreshUI();
+            dockController.updateDockUI();
         }
 
         else if (selectedIdx == 1) {
             dockController.addDockItem(new DockWindowsModuleItemModel("Recycle Bin", "trash"));
-            dockController.refreshUI();
+            dockController.updateDockUI();
         }
 
         else if (selectedIdx == 2) {
             dockController.addDockItem(new DockWindowsModuleItemModel("Control Panel", "ctrlpnl"));
-            dockController.refreshUI();
+            dockController.updateDockUI();
         }
 
         else if (selectedIdx == 3) {
             dockController.addDockItem(new DockWindowsModuleItemModel("Settings", "pconfig"));
-            dockController.refreshUI();
+            dockController.updateDockUI();
         }
 
         // come back to dockSettings

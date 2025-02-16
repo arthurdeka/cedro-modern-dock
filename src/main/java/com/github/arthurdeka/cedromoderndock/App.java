@@ -20,6 +20,7 @@ public class App extends Application {
 
         DockController dockController = loader.getController();
         dockController.setStage(stage);
+        dockController.handleInitialization();
 
         stage.setTitle("Cedro Modern Dock");
         stage.setScene(scene);
