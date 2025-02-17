@@ -53,7 +53,7 @@ public class DockController {
         hBoxContainer.getChildren().clear();
         hBoxContainer.setSpacing(getDockIconsSpacing());
         hBoxContainer.setStyle(
-                "-fx-background-color: rgba(0, 0, 0, " + model.getDockTransparency() + ");" +
+                "-fx-background-color: rgba(" + model.getDockColorRGB() + " " + model.getDockTransparency() + ");" +
                 "-fx-background-radius: " + model.getDockBorderRounding() + ";"
         );
 
@@ -197,6 +197,15 @@ public class DockController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public String getDockColorRGB() {
+        return model.getDockColorRGB();
+    }
+
+    public void setDockColorRGB(String value) {
+        model.setDockColorRGB(value);
+        updateDockUI();
     }
 
 }

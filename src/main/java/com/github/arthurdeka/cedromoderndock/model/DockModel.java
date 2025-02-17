@@ -11,6 +11,7 @@ public class DockModel {
     private int spacingBetweenIcons = 0;
     private double dockTransparency = 0.7;
     private int dockBorderRounding = 10;
+    private String dockColorRGB = "50, 50, 50 ";
 
     public List<DockItem> getItems() {
         return items;
@@ -66,5 +67,12 @@ public class DockModel {
         this.dockBorderRounding = dockBorderRounding;
     }
 
+    public String getDockColorRGB() {
+        return dockColorRGB;
+    }
+
+    public void setDockColorRGB(String dockColorRGB) {
+        this.dockColorRGB = dockColorRGB;
+    }
 
 }

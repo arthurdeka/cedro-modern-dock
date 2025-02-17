@@ -1,0 +1,7 @@
+/* prevents colorPicker from showing opacity option */
+#dockColorPicker .color-picker-grid .opacity-slider,
+#dockColorPicker .color-picker-grid .opacity-label {
+    visibility: hidden;
+    max-height: 0;
+    padding: 0;
+}

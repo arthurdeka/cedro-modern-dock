@@ -4,6 +4,7 @@ import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.DockItem;
 import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
+import com.github.arthurdeka.cedromoderndock.util.ColorManipulation;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -14,8 +15,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -54,6 +57,8 @@ public class SettingsController {
     private Slider dockTransparencySlider;
     @FXML
     private Slider dockBorderRoundingSlider;
+    @FXML
+    private ColorPicker dockColorPicker;
 
     // misc
     private DockController dockController;
@@ -101,6 +106,10 @@ public class SettingsController {
             int value = (int) dockBorderRoundingSlider.getValue();
             handleSetDockBorderRoundingSlider(value);
         }));
+
+        // set current color in colorpicker
+        Color RGBAcolor = ColorManipulation.fromRGBtoRGBA(dockController.getDockColorRGB());
+        dockColorPicker.setValue(RGBAcolor);
 
     }
 
@@ -263,6 +272,15 @@ public class SettingsController {
 
     private void handleSetDockBorderRoundingSlider(int value) {
         dockController.setDockBorderRounding(value);
+    }
+
+    @FXML
+    private void handleSetDockColor() {
+        String RGBAColor = String.valueOf(dockColorPicker.getValue());
+        String RGBColor = ColorManipulation.fromRGBAtoRGB(RGBAColor);
+
+        dockController.setDockColorRGB(RGBColor);
+
     }
 
     // misc ======
