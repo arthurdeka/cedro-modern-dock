@@ -9,9 +9,9 @@ public class DockModel {
     private List<DockItem> items = new ArrayList<>();
     private int iconsSize = 24;
     private int spacingBetweenIcons = 0;
-    private double dockTransparency = 0.7;
+    private double dockTransparency = 0.3;
     private int dockBorderRounding = 10;
-    private String dockColorRGB = "50, 50, 50 ";
+    private String dockColorRGB = "50, 50, 50, ";
 
     public List<DockItem> getItems() {
         return items;

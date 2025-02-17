@@ -52,6 +52,7 @@ public class DockController {
     public void updateDockUI() {
         hBoxContainer.getChildren().clear();
         hBoxContainer.setSpacing(getDockIconsSpacing());
+        System.out.println(model.getDockColorRGB() + "  AUU  " + model.getDockTransparency());
         hBoxContainer.setStyle(
                 "-fx-background-color: rgba(" + model.getDockColorRGB() + " " + model.getDockTransparency() + ");" +
                 "-fx-background-radius: " + model.getDockBorderRounding() + ";"
