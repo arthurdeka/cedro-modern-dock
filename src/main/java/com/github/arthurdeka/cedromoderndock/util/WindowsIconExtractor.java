@@ -1,70 +1,85 @@
 package com.github.arthurdeka.cedromoderndock.util;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.Shell32;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinDef.HICON;
-import com.sun.jna.platform.win32.GDI32;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.ptr.IntByReference;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.swing.Icon;
-import javax.swing.filechooser.FileSystemView;
 
-public class WindowsIconExtractor {
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
-    /*
-    *       Just a note: I don't really know what is going on here
-    *       Claude wrote that, if something needs to be changed he is the responsible
-    *
+/**
+ * Extrai o ícone de executáveis (.exe) em alta resolução
+ * chamando a própria Shell do Windows (PowerShell +.NET).
+ *
+ * Zero dependências externas — só requer PowerShell, presente
+ * desde o Windows 7.  O resultado é cacheado em memória para
+ * evitar lançar o PowerShell toda vez.
+ */
+public final class WindowsIconExtractor {
+
+    private WindowsIconExtractor() {}           // utilitário estático
+
+    // cache simples [pathExe → Image]; thread-safe
+    private static final Map<String, Image> CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * @param exePath caminho completo do executável.
+     * @return ícone em JavaFX Image ou {@code null} se falhar/fora do Windows.
      */
-
-
     public static Image getExeIcon(String exePath) {
+
+        /* 0) Checa cache --------------------------------------------------- */
+        Image cached = CACHE.get(exePath);
+        if (cached != null) return cached;
+
+        /* 1) Garante que estamos no Windows -------------------------------- */
+        if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
+            return null;
+        }
+
         try {
-            File file = new File(exePath);
-            if (!file.exists()) {
+            /* 2) Arquivo PNG temporário onde o PowerShell gravará o ícone */
+            Path pngTemp = Files.createTempFile("dockIcon-", ".png");
+            pngTemp.toFile().deleteOnExit();
+
+            /* 3) Script PowerShell (.NET) — salva o maior ícone disponível   */
+            String psScript = String.join(";", List.of(
+                    "$exe  = '" + exePath.replace("'", "''") + "'",
+                    "$out  = '" + pngTemp.toString().replace("'", "''") + "'",
+                    "Add-Type -AssemblyName System.Drawing",
+                    "$ico  = [System.Drawing.Icon]::ExtractAssociatedIcon($exe)",
+                    "if ($ico) {",
+                    "  $bmp = $ico.ToBitmap()",
+                    "  $bmp.Save($out, [System.Drawing.Imaging.ImageFormat]::Png)",
+                    "}"
+            ));
+
+            /* 4) Executa o PowerShell (timeout 3 s máx.) */
+            Process proc = new ProcessBuilder(
+                    "powershell", "-NoProfile", "-Command", psScript)
+                    .redirectErrorStream(true)
+                    .start();
+
+            proc.waitFor(3, TimeUnit.SECONDS);
+
+            if (Files.size(pngTemp) == 0) {      // ícone não salvo
                 return null;
             }
 
-            // Get system icon for the file
-            Icon icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+            /* 5) Carrega o PNG no JavaFX e coloca em cache ----------------- */
+            Image fxImg = new Image(pngTemp.toUri().toString(),
+                    0, 0,    // requestedWidth/Height = 0 → full size
+                    true,    // preserveRatio
+                    true);   // smooth
+            CACHE.put(exePath, fxImg);
+            return fxImg;
 
-            // Convert Icon to BufferedImage
-            BufferedImage bufferedImage = new BufferedImage(
-                    icon.getIconWidth(),
-                    icon.getIconHeight(),
-                    BufferedImage.TYPE_INT_ARGB
-            );
-            icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-
-            // Convert BufferedImage to JavaFX Image
-            return convertToFxImage(bufferedImage);
-        } catch (Exception e) {
-            System.out.println("Error trying to getExeIcon");
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private static Image convertToFxImage(BufferedImage image) {
-        WritableImage writableImage = new WritableImage(
-                image.getWidth(),
-                image.getHeight()
-        );
-
-        PixelWriter pixelWriter = writableImage.getPixelWriter();
-
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                pixelWriter.setArgb(x, y, image.getRGB(x, y));
-            }
-        }
-
-        return writableImage;
     }
 }
