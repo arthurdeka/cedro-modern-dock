@@ -147,6 +147,8 @@ public class SettingsController {
 
     private void addDockItemsToListView(List<DockItem> DockItems) {
 
+        listItems.clear();
+
         for (DockItem item : DockItems) {
             listItems.add(item.getLabel());
             System.out.println("[Initializing][listView] Adding item to ListView: " + item.getLabel());
@@ -204,11 +206,9 @@ public class SettingsController {
             dockController.addDockItem(newItem);
             System.out.println("[listView] Program added: " + selectedExeName);
 
-            //closes window
-            Stage stage = (Stage) addProgramButton.getScene().getWindow();
-            stage.close();
         }
 
+        addDockItemsToListView(dockController.getDockItems());
         dockController.updateDockUI();
 
     }
