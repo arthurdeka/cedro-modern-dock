@@ -80,6 +80,7 @@ public final class WindowsIconExtractor {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            Logger.error("WindowsIconExtractor error: " + e.getMessage());
             return null;
         }
     }

@@ -31,7 +31,7 @@ public final class SaveAndLoadDockSettings {
         try {
             mapper.writeValue(new File(CONFIG_FILE), model);
         } catch (IOException e) {
-            System.err.println("Error saving the DockModel: " + e.getMessage());
+            Logger.error("Error saving the DockModel: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -48,16 +48,17 @@ public final class SaveAndLoadDockSettings {
             try {
                 // Tries to read the current file
                 DockModel model = mapper.readValue(configFile, DockModel.class);
-                System.out.println("[SaveAndLoadDockSettings] Dock config.json loaded successfully");
+                Logger.info("[SaveAndLoadDockSettings] Dock config.json loaded successfully");
                 return model;
             } catch (IOException e) {
-                System.err.println("Error reading config.json, creating a new default config file: " + e.getMessage());
+                System.err.println();
+                Logger.error("Error reading config.json, creating a new default config file: " + e.getMessage());
                 // If reading fails, it creates and returns a new default config dock
                 return createAndSaveDefault();
             }
         } else {
             // If the file does not exist, it also creates and returns a new default config dock
-            System.out.println("config.json not found. creating a new default config file.");
+            Logger.error("config.json not found. creating a new default config file.");
             return createAndSaveDefault();
         }
     }

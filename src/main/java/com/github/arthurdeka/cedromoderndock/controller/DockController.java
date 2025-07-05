@@ -2,6 +2,7 @@ package com.github.arthurdeka.cedromoderndock.controller;
 
 import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.*;
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconExtractor;
 import javafx.fxml.FXML;
@@ -120,7 +121,7 @@ public class DockController {
                 Image icon = WindowsIconExtractor.getExeIcon(exePath);
                 imageView = new ImageView((icon));
             } catch (Exception e) {
-                System.out.println("ERROR - It was not possible to load the program's icon");
+                Logger.error("ERROR - It was not possible to load the program's icon");
             }
 
             imageView.setFitWidth(model.getIconsSize());

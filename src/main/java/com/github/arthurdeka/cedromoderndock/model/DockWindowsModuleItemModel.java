@@ -1,5 +1,6 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -108,7 +109,7 @@ public class DockWindowsModuleItemModel implements DockItem {
 
         }
 
-        System.out.println(label + " Clicked");
+        Logger.info(label + " Clicked");
 
     }
 

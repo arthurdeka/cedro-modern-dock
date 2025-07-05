@@ -1,5 +1,6 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;
@@ -37,11 +38,11 @@ public class DockProgramItemModel implements DockItem {
 
     @Override
     public void performAction() {
-        System.out.println(label + " Clicked");
+        Logger.info(label + " Clicked");
 
         // validation: checks if the path is null
         if (exePath == null || exePath.trim().isEmpty()) {
-            System.err.println("Executable path not defined for: " + label);
+            Logger.error("Executable path not defined for: " + label);
             return;
         }
 
@@ -49,13 +50,13 @@ public class DockProgramItemModel implements DockItem {
         try {
             executeAndHandleElevation(exePath);
         } catch (IOException e) {
-            System.err.println("Failed to open: " + label);
-            System.err.println("Path: " + exePath);
-            System.err.println("Error: " + e.getMessage());
+            Logger.error("Failed to open: " + label);
+            Logger.error("Path: " + exePath);
+            Logger.error("Error: " + e.getMessage());
             // Un-comment the line below to debug the stack trace
             // e.printStackTrace();
         } catch (InterruptedException e) {
-            System.out.println("Process interrupted: " + e.getMessage());
+            Logger.error("Process interrupted: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -64,7 +65,7 @@ public class DockProgramItemModel implements DockItem {
         try {
             // First try: open the software as normal permission level
             new ProcessBuilder(path).start();
-            System.out.println("Executing: " + label);
+            Logger.info("Executing: " + label);
 
         } catch (IOException e) {
             /*
@@ -75,12 +76,13 @@ public class DockProgramItemModel implements DockItem {
             * */
             if (e.getMessage() != null && e.getMessage().contains("error=740")) {
                 // if the code matches, we try again
-                System.out.println("Standard execution failed. Requesting elevation...");
+                Logger.info("Standard execution failed. Requesting elevation...");
                 String command = "Start-Process -FilePath '" + path + "' -Verb RunAs";
                 new ProcessBuilder("powershell.exe", "-Command", command).start();
-                System.out.println("(Elevated) Executing: " + label);
+                Logger.info("(Elevated) Executing: " + label);
             } else {
                 // Error for other reason
+                Logger.error("Error trying to execute program");
                 throw e;
             }
         }

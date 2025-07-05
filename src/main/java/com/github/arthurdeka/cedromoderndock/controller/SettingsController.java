@@ -5,6 +5,7 @@ import com.github.arthurdeka.cedromoderndock.model.DockItem;
 import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
 import com.github.arthurdeka.cedromoderndock.util.ColorManipulation;
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -66,7 +67,7 @@ public class SettingsController {
 
     // Run when FXML is loaded
     public void initialize() {
-        System.out.println("[Initializing] SettingsController");
+        Logger.info("[Initializing] SettingsController");
 
     }
 
@@ -151,7 +152,7 @@ public class SettingsController {
 
         for (DockItem item : DockItems) {
             listItems.add(item.getLabel());
-            System.out.println("[Initializing][listView] Adding item to ListView: " + item.getLabel());
+            Logger.info("[Initializing][listView] Adding item to ListView: " + item.getLabel());
         }
 
         // list view will always follow ObservableList<String> listItems
@@ -204,7 +205,7 @@ public class SettingsController {
 
             DockItem newItem = new DockProgramItemModel(selectedExeName, selectedExePath);
             dockController.addDockItem(newItem);
-            System.out.println("[listView] Program added: " + selectedExeName);
+            Logger.info("[listView] Program added: " + selectedExeName);
 
         }
 
@@ -218,7 +219,7 @@ public class SettingsController {
         int selectedIdx = listView.getSelectionModel().getSelectedIndex();
 
         // deletes selected option
-        System.out.println("[listView] Removing item on index: " + selectedIdx);
+        Logger.info("[listView] Removing item on index: " + selectedIdx);
 
         dockController.removeDockItem(selectedIdx);
         listItems.remove(selectedIdx);
@@ -232,7 +233,7 @@ public class SettingsController {
         int selectedIdx = listView.getSelectionModel().getSelectedIndex();
 
         if (event.getSource() == moveItemUpButton) {
-            System.out.println("[listView] moving item up");
+            Logger.info("[listView] moving item up");
             Collections.swap(listItems, selectedIdx, selectedIdx - 1);
             dockController.swapItems(selectedIdx, selectedIdx - 1);
 
@@ -240,7 +241,7 @@ public class SettingsController {
             listView.getSelectionModel().select(selectedIdx - 1);
 
         } else {
-            System.out.println("[listView] moving item down");
+            Logger.info("[listView] moving item down");
             Collections.swap(listItems, selectedIdx, selectedIdx + 1);
             dockController.swapItems(selectedIdx, selectedIdx + 1);
 

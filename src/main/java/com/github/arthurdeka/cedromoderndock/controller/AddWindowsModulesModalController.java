@@ -2,6 +2,7 @@ package com.github.arthurdeka.cedromoderndock.controller;
 
 import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.DockWindowsModuleItemModel;
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,15 +15,13 @@ public class AddWindowsModulesModalController {
 
     @FXML
     private ListView listView;
-    @FXML
-    private Button addSelectedModuleButton;
 
     private DockController dockController;
 
 
     // Run when FXML is loaded
     public void initialize() {
-        System.out.println("[Initializing] AddWindowsModulesModalController");
+        Logger.info("[Initializing] AddWindowsModulesModalController");
         addDefaultItemsToListView();
 
     }

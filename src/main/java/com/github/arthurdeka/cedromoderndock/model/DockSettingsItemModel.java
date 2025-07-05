@@ -1,5 +1,6 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -31,6 +32,6 @@ public class DockSettingsItemModel implements DockItem{
 
     @Override
     public void performAction() {
-        System.out.println("Opening Dock Settings window...");
+        Logger.info("Opening Dock Settings window...");
     }
 }

@@ -1,6 +1,7 @@
 package com.github.arthurdeka.cedromoderndock;
 
 import com.github.arthurdeka.cedromoderndock.controller.DockController;
+import com.github.arthurdeka.cedromoderndock.util.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
