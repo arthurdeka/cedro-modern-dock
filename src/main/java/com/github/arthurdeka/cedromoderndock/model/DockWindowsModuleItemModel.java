@@ -107,6 +107,9 @@ public class DockWindowsModuleItemModel implements DockItem {
             }
 
         }
+
+        System.out.println(label + " Clicked");
+
     }
 
 }
