@@ -47,7 +47,9 @@ public final class SaveAndLoadDockSettings {
         if (configFile.exists()) {
             try {
                 // Tries to read the current file
-                return mapper.readValue(configFile, DockModel.class);
+                DockModel model = mapper.readValue(configFile, DockModel.class);
+                System.out.println("[SaveAndLoadDockSettings] Dock config.json loaded successfully");
+                return model;
             } catch (IOException e) {
                 System.err.println("Error reading config.json, creating a new default config file: " + e.getMessage());
                 // If reading fails, it creates and returns a new default config dock

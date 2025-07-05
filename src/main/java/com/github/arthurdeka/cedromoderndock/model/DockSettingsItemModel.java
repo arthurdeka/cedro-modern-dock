@@ -31,6 +31,6 @@ public class DockSettingsItemModel implements DockItem{
 
     @Override
     public void performAction() {
-        System.out.println("Abrindo janela de configurações...");
+        System.out.println("Opening Dock Settings window...");
     }
 }

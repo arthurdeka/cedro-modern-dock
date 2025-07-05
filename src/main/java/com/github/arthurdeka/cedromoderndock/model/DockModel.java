@@ -20,7 +20,7 @@ public class DockModel {
     private int dockBorderRounding = 10;
     @Setter
     @Getter
-    private String dockColorRGB = "50, 50, 50, ";
+    private String dockColorRGB = "0, 0, 0, ";
     @Getter
     private double dockPositionX;
     @Getter

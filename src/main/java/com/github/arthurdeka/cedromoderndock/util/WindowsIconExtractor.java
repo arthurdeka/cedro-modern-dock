@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 
  * Extrai o ícone de executáveis (.exe) em alta resolução
  * chamando a própria Shell do Windows (PowerShell +.NET).
  *
