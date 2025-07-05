@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
+import static com.github.arthurdeka.cedromoderndock.util.UIUtils.setStageIcon;
+
 public class DockController {
 
     @FXML
@@ -171,6 +173,7 @@ public class DockController {
 
             Stage stage = new Stage();
             stage.setTitle("Settings Window");
+            setStageIcon(stage);
             stage.setScene(new Scene(root));
             stage.show();
 

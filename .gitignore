@@ -1,6 +1,6 @@
 config.json
 log.txt
-
+target
 # Compiled class file
 *.class
 

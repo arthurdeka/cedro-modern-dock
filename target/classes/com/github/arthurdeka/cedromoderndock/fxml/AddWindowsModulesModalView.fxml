@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="325.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.AddWindowsModulesModalController">
+<AnchorPane prefHeight="325.0" prefWidth="319.0" stylesheets="@../css/dockSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.AddWindowsModulesModalController">
    <children>
       <ListView fx:id="listView" layoutX="25.0" layoutY="90.0" prefHeight="147.0" prefWidth="270.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="15.0" layoutY="26.0" prefHeight="50.0" prefWidth="290.0" text="Add Windows Module" textAlignment="CENTER">

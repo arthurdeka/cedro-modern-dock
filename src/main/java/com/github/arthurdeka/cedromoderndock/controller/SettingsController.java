@@ -28,6 +28,8 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+import static com.github.arthurdeka.cedromoderndock.util.UIUtils.setStageIcon;
+
 public class SettingsController {
 
     // Icons tab
@@ -178,6 +180,7 @@ public class SettingsController {
 
             Stage stage = new Stage();
             stage.setTitle("Add Windows Module");
+            setStageIcon(stage);
             stage.setScene(new Scene(root));
             stage.show();
 
