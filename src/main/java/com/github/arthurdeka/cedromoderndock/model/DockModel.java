@@ -1,23 +1,30 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
+import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class DockModel {
 
+    @Getter
     private List<DockItem> items = new ArrayList<>();
     private int iconsSize = 24;
     private int spacingBetweenIcons = 0;
     private double dockTransparency = 0.3;
+    @Setter
+    @Getter
     private int dockBorderRounding = 10;
+    @Setter
+    @Getter
     private String dockColorRGB = "50, 50, 50, ";
+    @Getter
     private double dockPositionX;
+    @Getter
     private double dockPositionY;
-
-    public List<DockItem> getItems() {
-        return items;
-    }
 
     public void addItem(DockItem item) {
         items.add(item);
@@ -61,35 +68,15 @@ public class DockModel {
         this.dockTransparency = dockTransparency;
     }
 
-    public int getDockBorderRounding() {
-        return dockBorderRounding;
+    public void setDockPosition(Double PositionX, Double PositionY) {
+        this.dockPositionX = PositionX;
+        this.dockPositionY = PositionY;
+        saveChanges();
     }
 
-    public void setDockBorderRounding(int dockBorderRounding) {
-        this.dockBorderRounding = dockBorderRounding;
-    }
+    public void saveChanges() {
+        SaveAndLoadDockSettings.save(this);
+        System.out.println("[DockModel] changes saved");
 
-    public String getDockColorRGB() {
-        return dockColorRGB;
-    }
-
-    public void setDockColorRGB(String dockColorRGB) {
-        this.dockColorRGB = dockColorRGB;
-    }
-
-    public double getDockPositionX() {
-        return dockPositionX;
-    }
-
-    public void setDockPositionX(double dockPositionX) {
-        this.dockPositionX = dockPositionX;
-    }
-
-    public double getDockPositionY() {
-        return dockPositionY;
-    }
-
-    public void setDockPositionY(double dockPositionY) {
-        this.dockPositionY = dockPositionY;
     }
 }

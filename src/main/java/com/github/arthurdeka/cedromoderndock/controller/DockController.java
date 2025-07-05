@@ -2,6 +2,7 @@ package com.github.arthurdeka.cedromoderndock.controller;
 
 import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.*;
+import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconExtractor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,9 +34,8 @@ public class DockController {
 
     // Run when FXML is loaded
     public void handleInitialization() {
-        model = new DockModel();
+        model = SaveAndLoadDockSettings.load();
 
-        model.loadDefaultItems();
         enableDrag();
         updateDockUI();
     }
@@ -53,8 +53,7 @@ public class DockController {
 
         // saves the dock position on the model
         rootPane.setOnMouseReleased(event -> {
-            model.setDockPositionX(stage.getX());
-            model.setDockPositionY(stage.getY());
+            model.setDockPosition(stage.getX(), stage.getY());
         });
     }
 
@@ -75,6 +74,7 @@ public class DockController {
         updateDockUI();
     }
 
+    /* this method updates the DockView (actual rendered Dock) style and saves the changes */
     public void updateDockUI() {
         hBoxContainer.getChildren().clear();
         hBoxContainer.setSpacing(getDockIconsSpacing());
@@ -87,7 +87,10 @@ public class DockController {
 
         // resize DockView window to account for DockItem additions or removing
         stage.sizeToScene();
-
+        // sets DockView to the saved location on screen
+        stage.setX(model.getDockPositionX());
+        stage.setY(model.getDockPositionY());
+        saveChanges();
     }
 
     private Button createButton(DockItem item) {
@@ -226,5 +229,9 @@ public class DockController {
     public void setDockColorRGB(String value) {
         model.setDockColorRGB(value);
         updateDockUI();
+    }
+
+    public void saveChanges() {
+        model.saveChanges();
     }
 }

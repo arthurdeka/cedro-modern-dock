@@ -1,5 +1,8 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class DockSettingsItemModel implements DockItem{
 
     private String label = "Settings";

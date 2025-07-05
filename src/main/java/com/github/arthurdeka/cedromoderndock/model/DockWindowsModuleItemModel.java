@@ -1,14 +1,21 @@
 package com.github.arthurdeka.cedromoderndock.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+@NoArgsConstructor
 public class DockWindowsModuleItemModel implements DockItem {
 
     private String label = "";
     private String iconPath = "";
+    @Setter
+    @Getter
     private String module = "";
 
     public DockWindowsModuleItemModel(String label, String module) {
