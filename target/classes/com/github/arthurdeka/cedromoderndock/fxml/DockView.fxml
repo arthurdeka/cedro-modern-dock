@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane id="myAnchorPane" stylesheets="@../css/dock.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.DockController">
+<AnchorPane id="myAnchorPane" fx:id="rootPane" stylesheets="@../css/dock.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.DockController">
    <children>
       <HBox id="MyHBox" fx:id="hBoxContainer" fillHeight="false" layoutX="54.0" layoutY="27.0">
          <padding>

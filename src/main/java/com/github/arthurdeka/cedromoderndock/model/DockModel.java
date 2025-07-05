@@ -12,6 +12,8 @@ public class DockModel {
     private double dockTransparency = 0.3;
     private int dockBorderRounding = 10;
     private String dockColorRGB = "50, 50, 50, ";
+    private double dockPositionX;
+    private double dockPositionY;
 
     public List<DockItem> getItems() {
         return items;
@@ -75,4 +77,19 @@ public class DockModel {
         this.dockColorRGB = dockColorRGB;
     }
 
+    public double getDockPositionX() {
+        return dockPositionX;
+    }
+
+    public void setDockPositionX(double dockPositionX) {
+        this.dockPositionX = dockPositionX;
+    }
+
+    public double getDockPositionY() {
+        return dockPositionY;
+    }
+
+    public void setDockPositionY(double dockPositionY) {
+        this.dockPositionY = dockPositionY;
+    }
 }
