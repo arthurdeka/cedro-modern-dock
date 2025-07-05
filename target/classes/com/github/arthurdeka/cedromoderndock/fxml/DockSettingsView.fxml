@@ -10,25 +10,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/dockSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.SettingsController">
+<AnchorPane prefHeight="467.0" prefWidth="582.0" stylesheets="@../css/dockSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.arthurdeka.cedromoderndock.controller.SettingsController">
    <children>
       <Label layoutX="14.0" prefHeight="59.0" prefWidth="203.0" text="Dock Settings">
          <font>
             <Font size="32.0" />
          </font>
       </Label>
-      <TabPane layoutY="59.0" prefHeight="342.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="59.0" prefHeight="410.0" prefWidth="582.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Icons">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="222.0" prefWidth="558.0">
                      <children>
-                        <Button fx:id="addProgramButton" layoutX="394.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleAddProgram" prefHeight="32.0" prefWidth="144.0" text="Add Program" />
+                        <Button fx:id="addProgramButton" layoutX="308.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleAddProgram" prefHeight="33.0" prefWidth="230.0" text="Add Program" />
                         <ListView fx:id="listView" layoutX="14.0" layoutY="11.0" prefHeight="237.0" prefWidth="283.0" />
-                        <Button fx:id="removeProgramButton" disable="true" layoutX="394.0" layoutY="227.0" mnemonicParsing="false" onAction="#handleRemoveProgram" prefHeight="32.0" prefWidth="144.0" text="Remove Item" />
+                        <Button fx:id="removeProgramButton" disable="true" layoutX="309.0" layoutY="113.0" mnemonicParsing="false" onAction="#handleRemoveProgram" prefHeight="33.0" prefWidth="229.0" text="Remove Selected Item" />
                         <Button fx:id="moveItemUpButton" disable="true" layoutX="14.0" layoutY="259.0" mnemonicParsing="false" onAction="#handleMoveItem" prefHeight="32.0" prefWidth="134.0" text="Move Item Up" />
-                        <Button fx:id="moveItemDownButton" disable="true" layoutX="184.0" layoutY="259.0" mnemonicParsing="false" onAction="#handleMoveItem" prefHeight="32.0" prefWidth="114.0" text="Move Item Down" />
-                        <Button layoutX="394.0" layoutY="71.0" mnemonicParsing="false" onAction="#openAddWindowsModuleWindow" prefHeight="32.0" prefWidth="144.0" text="Add Windows Module" />
+                        <Button fx:id="moveItemDownButton" disable="true" layoutX="159.0" layoutY="259.0" mnemonicParsing="false" onAction="#handleMoveItem" prefHeight="33.0" prefWidth="139.0" text="Move Item Down" />
+                        <Button layoutX="307.0" layoutY="71.0" mnemonicParsing="false" onAction="#openAddWindowsModuleWindow" prefHeight="33.0" prefWidth="231.0" text="Add Windows Module" />
                      </children>
                   </AnchorPane>
             </content>
