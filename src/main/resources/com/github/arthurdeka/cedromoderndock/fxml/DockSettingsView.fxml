@@ -82,7 +82,14 @@
             </Tab>
             <Tab text="Dock Positioning">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="210.0" fitWidth="378.0" layoutX="68.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/positioning.png" />
+                           </image>
+                        </ImageView>
+                     </children></AnchorPane>
                </content>
             </Tab>
             <Tab text="General">
