@@ -289,6 +289,22 @@ public class SettingsController {
         this.dockController = dockController;
     }
 
+    @FXML
+    private void openAknowledgementsWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/AcknowledgementsModalView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Acknowledgements");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
 
 

@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -85,7 +87,40 @@
             </Tab>
             <Tab text="General">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="63.0" fitWidth="252.0" layoutX="166.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/logo.png" />
+                           </image>
+                        </ImageView>
+                        <Label alignment="CENTER" layoutY="91.0" prefHeight="29.0" prefWidth="531.0" styleClass="general-label" text="Cedro Software Modern Dock - Version fx1.0 - 07/2025" textAlignment="CENTER">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="1.0" layoutY="109.0" prefHeight="29.0" prefWidth="531.0" styleClass="general-label" text="www.visual11themes.win" textAlignment="CENTER">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="2.0" layoutY="178.0" prefHeight="29.0" prefWidth="531.0" styleClass="general-label" text="Repository: github.com/arthurdeka/cedro-modern-dock" textAlignment="CENTER">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="4.0" layoutY="159.0" prefHeight="29.0" prefWidth="531.0" styleClass="general-label" text="Contact: github.com/arthurdeka" textAlignment="CENTER">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="4.0" layoutY="228.0" prefHeight="29.0" prefWidth="531.0" styleClass="general-label" text="Free and Open-Source Software" textAlignment="CENTER">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="addProgramButton1" layoutX="159.0" layoutY="273.0" mnemonicParsing="false" onAction="#openAknowledgementsWindow" prefHeight="33.0" prefWidth="230.0" text="Acknowledgements" />
+                     </children></AnchorPane>
                </content>
             </Tab>
         </tabs>

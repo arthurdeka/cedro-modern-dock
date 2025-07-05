@@ -99,6 +99,14 @@
 }
 
 
+/* --- General tab --- */
+.general-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
 /* --- ListView Styles --- */
 .list-view {
     -fx-background-color: #2b2b2b;
@@ -134,7 +142,7 @@
 
 .slider .thumb {
     -fx-background-color: #007acc;
-    -fx-background-radius: 20; /* Makes it a circle */
+    -fx-background-radius: 20;
     -fx-padding: 8px;
 }
 
