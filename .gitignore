@@ -1,6 +1,13 @@
 config.json
 log.txt
+
+
 target
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
 # Compiled class file
 *.class
 
