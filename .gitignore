@@ -5,22 +5,29 @@ log.txt
 target
 target/
 
-# IntelliJ IDEA
-.idea
-.idea/
-/.idea
-*.iml
-# Compiled class file
-*.class
+# Build output and packages
+/target/
+*.jar
+*.war
+*.ear
 
-# Log file
+# Logs
 *.log
 
-# BlueJ files
-*.ctxt
+# IDE files
+.idea/
+.project
+.classpath
+.settings/
+*.iml
+*.iws
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Maven generated files
+.mvn/timing.properties
 
 # Package Files #
 *.jar
