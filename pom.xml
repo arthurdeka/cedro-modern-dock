@@ -6,7 +6,7 @@
 
     <groupId>com.github.arthurdeka</groupId>
     <artifactId>cedro-modern-dock</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Cedro Modern Dock</name>
 
     <properties>
@@ -19,12 +19,28 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>23.0.1</version>
+            <classifier>win</classifier>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>23.0.1</version>
+            <classifier>win</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>23.0.1</version>
+            <classifier>win</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>23.0.1</version>
+            <classifier>win</classifier>
         </dependency>
 
         <dependency>
@@ -75,29 +91,107 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>23</source>
-                    <target>23</target>
+                    <source>21</source>
+                    <target>21</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.38</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.2.1.Final</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
-                        <id>default-cli</id>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
                         <configuration>
-                            <mainClass>
-                                com.github.arthurdeka.cedromoderndock/com.github.arthurdeka.cedromoderndock.App
-                            </mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
-                            <noManPages>true</noManPages>
-                            <stripDebug>true</stripDebug>
-                            <noHeaderFiles>true</noHeaderFiles>
+                            <outputDirectory>${project.build.directory}/modified-mods</outputDirectory>
+                            <modules>
+                                <module>
+                                    <artifact>
+                                        <groupId>net.java.dev.jna</groupId>
+                                        <artifactId>jna</artifactId>
+                                    </artifact>
+                                    <moduleInfo>
+                                        <name>com.sun.jna</name>
+                                    </moduleInfo>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>net.java.dev.jna</groupId>
+                                        <artifactId>jna-platform</artifactId>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module com.sun.jna.platform {
+                                        // Declara a dependência CRÍTICA no módulo base
+                                        requires transitive com.sun.jna;
+                                        // Exporta os pacotes para que seu código possa usá-los
+                                        exports com.sun.jna.platform.win32;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                            </modules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.7.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/mods</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <excludeArtifactIds>jna,jna-platform</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>Cedro Modern Dock</name>
+                    <destination>target/dist</destination>
+                    <module>com.github.arthurdeka.cedromoderndock/com.github.arthurdeka.cedromoderndock.App</module>
+                    <modulePaths>
+                        <path>${project.build.directory}/mods</path>
+                        <path>${project.build.directory}/modified-mods</path>
+                        <path>${project.build.directory}/${project.build.finalName}.jar</path>
+                    </modulePaths>
+                    <type>APP_IMAGE</type>
+                    <appVersion>${project.version}</appVersion>
+                    <vendor>com.github.arthurdeka</vendor>
+                    <copyright>Copyright (C) 2024</copyright>
+                    <icon>src/main/resources/com/github/arthurdeka/cedromoderndock/icons/cedro/logo_256_ICO.ico</icon>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jpackage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
