@@ -7,6 +7,12 @@
 
 ![modern-dock-banner1](https://github.com/user-attachments/assets/77157afc-4db1-400b-8141-3e5bfb2ee7a9)
 
+> ## How To Install
+> 1. Go to [Releases](https://github.com/arthurdeka/cedro-modern-dock/releases):
+> 2. Download the latest ```Setup-CedroSoftware-ModernDock_x64.exe``` file
+> 3. Execute and Install
+<br>
+
 ## ✨ Features
 
 - **Quick Access:** Easily add and manage your favorite applications for quick launching.
