@@ -2,7 +2,9 @@ package com.github.arthurdeka.cedromoderndock.util;
 
 import javafx.scene.image.Image;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -23,30 +25,20 @@ public final class WindowsIconExtractor {
 
     private WindowsIconExtractor() {}           // utilitário estático
 
-    // cache simples [pathExe → Image]; thread-safe
     private static final Map<String, Image> CACHE = new ConcurrentHashMap<>();
 
-    /**
-     * @param exePath caminho completo do executável.
-     * @return ícone em JavaFX Image ou {@code null} se falhar/fora do Windows.
-     */
     public static Image getExeIcon(String exePath) {
-
-        /* 0) Checa cache --------------------------------------------------- */
         Image cached = CACHE.get(exePath);
         if (cached != null) return cached;
 
-        /* 1) Garante que estamos no Windows -------------------------------- */
         if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
             return null;
         }
 
         try {
-            /* 2) Arquivo PNG temporário onde o PowerShell gravará o ícone */
             Path pngTemp = Files.createTempFile("dockIcon-", ".png");
             pngTemp.toFile().deleteOnExit();
 
-            /* 3) Script PowerShell (.NET) — salva o maior ícone disponível   */
             String psScript = String.join(";", List.of(
                     "$exe  = '" + exePath.replace("'", "''") + "'",
                     "$out  = '" + pngTemp.toString().replace("'", "''") + "'",
@@ -58,23 +50,33 @@ public final class WindowsIconExtractor {
                     "}"
             ));
 
-            /* 4) Executa o PowerShell (timeout 3 s máx.) */
             Process proc = new ProcessBuilder(
                     "powershell", "-NoProfile", "-Command", psScript)
                     .redirectErrorStream(true)
                     .start();
 
+            // --- debug logging ---
+            StringBuilder psOutput = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    psOutput.append(line).append(System.lineSeparator());
+                }
+            }
+
             proc.waitFor(3, TimeUnit.SECONDS);
 
-            if (Files.size(pngTemp) == 0) {      // ícone não salvo
+            // --- debug log ---
+            if (psOutput.length() > 0) {
+                Logger.info("[PowerShell Output] " + psOutput);
+            }
+
+            if (Files.size(pngTemp) == 0) {
+                Logger.error("Temp file for " + exePath + " is empty. PowerShell likely failed.");
                 return null;
             }
 
-            /* 5) Carrega o PNG no JavaFX e coloca em cache ----------------- */
-            Image fxImg = new Image(pngTemp.toUri().toString(),
-                    0, 0,    // requestedWidth/Height = 0 → full size
-                    true,    // preserveRatio
-                    true);   // smooth
+            Image fxImg = new Image(pngTemp.toUri().toString(), 0, 0, true, true);
             CACHE.put(exePath, fxImg);
             return fxImg;
 

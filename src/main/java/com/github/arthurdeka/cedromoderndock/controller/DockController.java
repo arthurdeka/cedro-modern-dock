@@ -5,6 +5,7 @@ import com.github.arthurdeka.cedromoderndock.model.*;
 import com.github.arthurdeka.cedromoderndock.util.Logger;
 import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconExtractor;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -101,65 +102,72 @@ public class DockController {
         if (item instanceof DockSettingsItemModel) {
             Image icon = new Image(getClass().getResourceAsStream(item.getPath()));
             ImageView imageView = new ImageView(icon);
-
             imageView.setFitWidth(model.getIconsSize());
             imageView.setFitHeight(model.getIconsSize());
 
             Button button = new Button(item.getLabel());
             button.getStyleClass().add("dock-button");
             button.setGraphic(imageView);
-
             button.setOnAction(e -> openSettingsWindow());
             return button;
-
-
-        } else if (item instanceof DockProgramItemModel) {
-            String exePath = item.getPath();
-
-            ImageView imageView = null;
-
-
-            try {
-                Image icon = WindowsIconExtractor.getExeIcon(exePath);
-                imageView = new ImageView((icon));
-            } catch (Exception e) {
-                Logger.error("ERROR - It was not possible to load the program's icon");
-            }
-
-            imageView.setFitWidth(model.getIconsSize());
-            imageView.setFitHeight(model.getIconsSize());
-
-            Button button = new Button(item.getLabel());
-            button.getStyleClass().add("dock-button");
-            button.setGraphic(imageView);
-
-            button.setOnAction(e -> item.performAction());
-
-
-            return button;
-
 
         } else if (item instanceof DockWindowsModuleItemModel) {
             Image icon = new Image(getClass().getResourceAsStream(item.getPath()));
             ImageView imageView = new ImageView(icon);
-
             imageView.setFitWidth(model.getIconsSize());
             imageView.setFitHeight(model.getIconsSize());
 
             Button button = new Button(item.getLabel());
             button.getStyleClass().add("dock-button");
             button.setGraphic(imageView);
+            button.setOnAction(e -> item.performAction());
+            return button;
+
+        // Logic for DockProgramItemModel runs on a background thread
+        } else if (item instanceof DockProgramItemModel) {
+            String exePath = item.getPath();
+
+            // 1. Create an empty button and ImageView as placeholders
+            Button button = new Button(item.getLabel());
+            button.getStyleClass().add("dock-button");
+            ImageView imageView = new ImageView();
+            imageView.setFitWidth(model.getIconsSize());
+            imageView.setFitHeight(model.getIconsSize());
+            button.setGraphic(imageView);
+
+            // 2. Create a Task to load the icon on a background thread
+            Task<Image> loadIconTask = new Task<>() {
+                @Override
+                protected Image call() throws Exception {
+                    return WindowsIconExtractor.getExeIcon(exePath);
+                }
+            };
+
+            // 3. Define what to do when the task succeeds
+            loadIconTask.setOnSucceeded(event -> {
+                // Get the loaded icon and set it on the ImageView.
+                Image loadedIcon = loadIconTask.getValue();
+                if (loadedIcon != null) {
+                    imageView.setImage(loadedIcon);
+                } else {
+                    Logger.error("Icon returned for " + exePath + " is null.");
+                }
+            });
+
+            // 4. Define what to do if the task fails
+            loadIconTask.setOnFailed(event -> {
+                Logger.error("Failed to load icon for " + exePath + loadIconTask.getException());
+            });
+
+            // 5. Start the task on a new thread
+            new Thread(loadIconTask).start();
 
             button.setOnAction(e -> item.performAction());
             return button;
 
-
         } else {
             return null;
-
         }
-
-
     }
 
     private void openSettingsWindow() {
