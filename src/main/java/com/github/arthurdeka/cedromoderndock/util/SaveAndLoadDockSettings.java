@@ -6,16 +6,45 @@ import com.github.arthurdeka.cedromoderndock.model.DockModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Utility class used to save and load the Dock's settings
  */
 public final class SaveAndLoadDockSettings {
 
-    private static final String CONFIG_FILE = "config.json";
+    private static final String CONFIG_FILE_NAME = "config.json";
+    private static final Path CONFIG_FILE_PATH = getConfigPath();
     private static final ObjectMapper mapper = createObjectMapper();
 
     private SaveAndLoadDockSettings() {}
+
+    /**
+     * Determines the absolute path for the configuration file in the user's
+     * AppData/Roaming directory.
+     * @return The absolute Path to the config file.
+     */
+    private static Path getConfigPath() {
+        // Get the AppData\Roaming folder path (standard for user-specific config)
+        String appDataPath = System.getenv("APPDATA");
+        if (appDataPath == null || appDataPath.isEmpty()) {
+            // Fallback to user home directory if APPDATA is not available
+            appDataPath = System.getProperty("user.home");
+        }
+
+        // Create a dedicated directory for our application to keep things clean
+        Path configDir = Paths.get(appDataPath, "CedroModernDock");
+
+        // Ensure the directory exists
+        File dir = configDir.toFile();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        // Return the full path to our config file
+        return configDir.resolve(CONFIG_FILE_NAME);
+    }
 
     private static ObjectMapper createObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -24,12 +53,12 @@ public final class SaveAndLoadDockSettings {
     }
 
     /**
-     * saves the DockModel objetct in the config file (config.json).
+     * saves the DockModel object in the config file (config.json).
      * @param model DockModel object to be saved.
      */
     public static void save(DockModel model) {
         try {
-            mapper.writeValue(new File(CONFIG_FILE), model);
+            mapper.writeValue(CONFIG_FILE_PATH.toFile(), model);
         } catch (IOException e) {
             Logger.error("Error saving the DockModel: " + e.getMessage());
             e.printStackTrace();
@@ -43,22 +72,21 @@ public final class SaveAndLoadDockSettings {
      * @return A DockModel instance, always valid (loaded or default).
      */
     public static DockModel load() {
-        File configFile = new File(CONFIG_FILE);
-        if (configFile.exists()) {
+        File configFile = CONFIG_FILE_PATH.toFile();
+        if (configFile.exists() && configFile.length() > 0) { // Check if file is not empty
             try {
                 // Tries to read the current file
                 DockModel model = mapper.readValue(configFile, DockModel.class);
-                Logger.info("[SaveAndLoadDockSettings] Dock config.json loaded successfully");
+                Logger.info("[SaveAndLoadDockSettings] Dock config.json loaded successfully from: " + CONFIG_FILE_PATH);
                 return model;
             } catch (IOException e) {
-                System.err.println();
                 Logger.error("Error reading config.json, creating a new default config file: " + e.getMessage());
                 // If reading fails, it creates and returns a new default config dock
                 return createAndSaveDefault();
             }
         } else {
             // If the file does not exist, it also creates and returns a new default config dock
-            Logger.error("config.json not found. creating a new default config file.");
+            Logger.error("config.json not found or is empty. Creating a new default config file at: " + CONFIG_FILE_PATH);
             return createAndSaveDefault();
         }
     }
