@@ -4,8 +4,7 @@ import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.*;
 import com.github.arthurdeka.cedromoderndock.util.Logger;
 import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
-import com.github.arthurdeka.cedromoderndock.util.WindowsIconExtractor;
-import javafx.concurrent.Task;
+import com.github.arthurdeka.cedromoderndock.util.WindowsIconHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +16,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.github.arthurdeka.cedromoderndock.util.UIUtils.setStageIcon;
@@ -125,42 +127,23 @@ public class DockController {
 
         // Logic for DockProgramItemModel runs on a background thread
         } else if (item instanceof DockProgramItemModel) {
-            String exePath = item.getPath();
+            Path iconPath = WindowsIconHandler.getCachedIconPath(item.getPath());
 
-            // 1. Create an empty button and ImageView as placeholders
+            // if file does not exist
+            if (Files.notExists(iconPath)) {
+                Logger.error("DockController - createButton - path for cached icon not found");
+            }
+
+            Image icon = new Image(iconPath.toUri().toString());
+            ImageView imageView = new ImageView(icon);
+            imageView.setFitWidth(model.getIconsSize());
+            imageView.setFitHeight(model.getIconsSize());
+
             Button button = new Button(item.getLabel());
             button.getStyleClass().add("dock-button");
-            ImageView imageView = new ImageView();
             imageView.setFitWidth(model.getIconsSize());
             imageView.setFitHeight(model.getIconsSize());
             button.setGraphic(imageView);
-
-            // 2. Create a Task to load the icon on a background thread
-            Task<Image> loadIconTask = new Task<>() {
-                @Override
-                protected Image call() throws Exception {
-                    return WindowsIconExtractor.getExeIcon(exePath);
-                }
-            };
-
-            // 3. Define what to do when the task succeeds
-            loadIconTask.setOnSucceeded(event -> {
-                // Get the loaded icon and set it on the ImageView.
-                Image loadedIcon = loadIconTask.getValue();
-                if (loadedIcon != null) {
-                    imageView.setImage(loadedIcon);
-                } else {
-                    Logger.error("Icon returned for " + exePath + " is null.");
-                }
-            });
-
-            // 4. Define what to do if the task fails
-            loadIconTask.setOnFailed(event -> {
-                Logger.error("Failed to load icon for " + exePath + loadIconTask.getException());
-            });
-
-            // 5. Start the task on a new thread
-            new Thread(loadIconTask).start();
 
             button.setOnAction(e -> item.performAction());
             return button;

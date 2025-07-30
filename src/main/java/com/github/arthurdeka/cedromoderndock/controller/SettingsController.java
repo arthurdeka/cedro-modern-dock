@@ -6,6 +6,7 @@ import com.github.arthurdeka.cedromoderndock.model.DockProgramItemModel;
 import com.github.arthurdeka.cedromoderndock.model.DockSettingsItemModel;
 import com.github.arthurdeka.cedromoderndock.util.ColorManipulation;
 import com.github.arthurdeka.cedromoderndock.util.Logger;
+import com.github.arthurdeka.cedromoderndock.util.WindowsIconHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -206,6 +207,10 @@ public class SettingsController {
             String selectedExePath = file.getAbsolutePath();
             String selectedExeName = Paths.get(file.getAbsolutePath()).getFileName().toString().replace(".exe", "");
 
+            //extracting icon
+            WindowsIconHandler.extractAndCacheIcon(selectedExePath);
+
+            // saving to dock
             DockItem newItem = new DockProgramItemModel(selectedExeName, selectedExePath);
             dockController.addDockItem(newItem);
             Logger.info("[listView] Program added: " + selectedExeName);
