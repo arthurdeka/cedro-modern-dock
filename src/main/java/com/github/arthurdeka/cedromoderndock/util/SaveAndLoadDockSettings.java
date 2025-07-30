@@ -14,8 +14,7 @@ import java.nio.file.Paths;
  */
 public final class SaveAndLoadDockSettings {
 
-    //private static final String CONFIG_FILE_NAME = "config.json";
-    private static final String CONFIG_FILE_NAME = "config_dev.json";
+    private static final String CONFIG_FILE_NAME = "config.json";
     private static final Path CONFIG_FILE_PATH = getConfigPath();
     private static final ObjectMapper mapper = createObjectMapper();
 
