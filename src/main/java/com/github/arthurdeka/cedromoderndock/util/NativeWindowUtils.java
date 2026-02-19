@@ -23,7 +23,7 @@ public class NativeWindowUtils {
             return windows;
         }
 
-        final Path targetPath = Paths.get(executablePath).toAbsolutePath();
+        final Path targetPath = Paths.get(executablePath).toAbsolutePath().normalize();
 
         User32.INSTANCE.EnumWindows((hWnd, arg1) -> {
             if (User32.INSTANCE.IsWindowVisible(hWnd)) {
@@ -53,7 +53,7 @@ public class NativeWindowUtils {
         int pid = pidRef.getValue();
 
         WinNT.HANDLE process = Kernel32.INSTANCE.OpenProcess(
-                Kernel32.PROCESS_QUERY_INFORMATION | Kernel32.PROCESS_VM_READ,
+                WinNT.PROCESS_QUERY_LIMITED_INFORMATION,
                 false,
                 pid
         );
@@ -64,8 +64,8 @@ public class NativeWindowUtils {
                 IntByReference size = new IntByReference(pathBuffer.length);
                 if (Kernel32.INSTANCE.QueryFullProcessImageName(process, 0, pathBuffer, size)) {
                     String processPathStr = new String(pathBuffer, 0, size.getValue());
-                    Path processPath = Paths.get(processPathStr).toAbsolutePath();
-                    if (processPath.equals(targetPath)) {
+                    Path processPath = Paths.get(processPathStr).toAbsolutePath().normalize();
+                    if (isSameExecutable(processPath, targetPath)) {
                         return true;
                     }
                 }
@@ -74,6 +74,38 @@ public class NativeWindowUtils {
             }
         }
         return false;
+    }
+
+    private static boolean isSameExecutable(Path processPath, Path targetPath) {
+        if (processPath == null || targetPath == null) {
+            return false;
+        }
+
+        if (processPath.equals(targetPath)) {
+            return true;
+        }
+
+        String processStr = normalizePathString(processPath);
+        String targetStr = normalizePathString(targetPath);
+        if (processStr.equalsIgnoreCase(targetStr)) {
+            return true;
+        }
+
+        Path processFile = processPath.getFileName();
+        Path targetFile = targetPath.getFileName();
+        if (processFile != null && targetFile != null) {
+            return processFile.toString().equalsIgnoreCase(targetFile.toString());
+        }
+
+        return false;
+    }
+
+    private static String normalizePathString(Path path) {
+        String value = path.toString();
+        if (value.startsWith("\\\\?\\")) {
+            value = value.substring(4);
+        }
+        return value;
     }
 
     public static void activateWindow(HWND hwnd) {

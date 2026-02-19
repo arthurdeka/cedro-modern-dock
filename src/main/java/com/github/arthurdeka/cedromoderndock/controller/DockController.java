@@ -42,6 +42,7 @@ public class DockController {
     private WindowPreviewPopup windowPreviewPopup;
     private PauseTransition hideTimer;
     private boolean isHoveringPopup = false;
+    private Button currentHoverButton;
 
     // variables for the enableDrag function
     private double xOffset = 0;
@@ -181,12 +182,19 @@ public class DockController {
         PauseTransition showDelay = new PauseTransition(Duration.millis(300));
 
         button.setOnMouseEntered(e -> {
+            currentHoverButton = button;
             hideTimer.stop();
+            if (windowPreviewPopup.isShowing()) {
+                windowPreviewPopup.hide();
+            }
             showDelay.setOnFinished(ev -> showWindowPreview(button, item, icon));
             showDelay.playFromStart();
         });
 
         button.setOnMouseExited(e -> {
+            if (currentHoverButton == button) {
+                currentHoverButton = null;
+            }
             showDelay.stop();
             hideTimer.playFromStart();
         });
@@ -202,6 +210,9 @@ public class DockController {
 
         task.setOnSucceeded(e -> {
             List<NativeWindowUtils.WindowInfo> windows = task.getValue();
+            if (currentHoverButton != button || !button.isHover()) {
+                return;
+            }
             if (!windows.isEmpty()) {
                 windowPreviewPopup.updateContent(windows, icon, model);
                 windowPreviewPopup.showAbove(button);
@@ -215,6 +226,8 @@ public class DockController {
                     isHoveringPopup = false;
                     hideTimer.playFromStart();
                 });
+            } else if (windowPreviewPopup.isShowing()) {
+                windowPreviewPopup.hide();
             }
         });
 
