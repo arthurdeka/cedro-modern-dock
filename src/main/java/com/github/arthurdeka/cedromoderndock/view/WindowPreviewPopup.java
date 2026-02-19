@@ -155,7 +155,12 @@ public class WindowPreviewPopup extends Popup {
     }
 
     private Rectangle2D getScreenBounds(Bounds bounds) {
-        for (Screen screen : Screen.getScreensForRectangle(bounds)) {
+        for (Screen screen : Screen.getScreensForRectangle(
+                bounds.getMinX(),
+                bounds.getMinY(),
+                bounds.getWidth(),
+                bounds.getHeight()
+        )) {
             return screen.getVisualBounds();
         }
         return Screen.getPrimary().getVisualBounds();
