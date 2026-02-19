@@ -51,7 +51,8 @@ public class DockController {
         model = SaveAndLoadDockSettings.load();
 
         windowPreviewPopup = new WindowPreviewPopup();
-        hideTimer = new PauseTransition(Duration.millis(300));
+        // Increased delay to allow moving mouse from dock icon to popup
+        hideTimer = new PauseTransition(Duration.millis(500));
         hideTimer.setOnFinished(e -> windowPreviewPopup.hide());
 
         enableDrag();

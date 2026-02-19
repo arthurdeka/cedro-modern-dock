@@ -139,6 +139,7 @@ public class WindowPreviewPopup extends Popup {
         double h = getHeight();
 
         setX(bounds.getMinX() + (bounds.getWidth() / 2) - (w / 2));
-        setY(bounds.getMinY() - h - 10);
+        // Position immediately above the button with a smaller gap to allow easier mouse traversal
+        setY(bounds.getMinY() - h - 5);
     }
 }
