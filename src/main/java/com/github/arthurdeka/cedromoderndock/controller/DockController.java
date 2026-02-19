@@ -5,6 +5,12 @@ import com.github.arthurdeka.cedromoderndock.model.*;
 import com.github.arthurdeka.cedromoderndock.util.Logger;
 import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconHandler;
+import com.github.arthurdeka.cedromoderndock.util.NativeWindowUtils;
+import com.github.arthurdeka.cedromoderndock.view.WindowPreviewPopup;
+import javafx.animation.PauseTransition;
+import javafx.concurrent.Task;
+import javafx.util.Duration;
+import javafx.geometry.Bounds;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,6 +39,8 @@ public class DockController {
 
     private DockModel model;
     private Stage stage;
+    private WindowPreviewPopup windowPreviewPopup;
+    private PauseTransition hideTimer;
 
     // variables for the enableDrag function
     private double xOffset = 0;
@@ -41,6 +49,10 @@ public class DockController {
     // Run when FXML is loaded
     public void handleInitialization() {
         model = SaveAndLoadDockSettings.load();
+
+        windowPreviewPopup = new WindowPreviewPopup();
+        hideTimer = new PauseTransition(Duration.millis(300));
+        hideTimer.setOnFinished(e -> windowPreviewPopup.hide());
 
         enableDrag();
         updateDockUI();
@@ -149,11 +161,56 @@ public class DockController {
             button.setGraphic(imageView);
 
             button.setOnAction(e -> item.performAction());
+
+            setupHoverPreview(button, (DockProgramItemModel) item, icon);
+
             return button;
 
         } else {
             return null;
         }
+    }
+
+    private void setupHoverPreview(Button button, DockProgramItemModel item, Image icon) {
+        PauseTransition showDelay = new PauseTransition(Duration.millis(300));
+
+        button.setOnMouseEntered(e -> {
+            hideTimer.stop();
+            showDelay.setOnFinished(ev -> showWindowPreview(button, item, icon));
+            showDelay.playFromStart();
+        });
+
+        button.setOnMouseExited(e -> {
+            showDelay.stop();
+            hideTimer.playFromStart();
+        });
+    }
+
+    private void showWindowPreview(Button button, DockProgramItemModel item, Image icon) {
+        Task<List<NativeWindowUtils.WindowInfo>> task = new Task<>() {
+            @Override
+            protected List<NativeWindowUtils.WindowInfo> call() throws Exception {
+                return NativeWindowUtils.getOpenWindows(item.getPath());
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            List<NativeWindowUtils.WindowInfo> windows = task.getValue();
+            if (!windows.isEmpty()) {
+                windowPreviewPopup.updateContent(windows, icon, model);
+                windowPreviewPopup.showAbove(button);
+
+                // Also handle mouse over popup to prevent hiding
+                windowPreviewPopup.getContainer().setOnMouseEntered(ev -> hideTimer.stop());
+                windowPreviewPopup.getContainer().setOnMouseExited(ev -> hideTimer.playFromStart());
+            }
+        });
+
+        task.setOnFailed(e -> {
+            Logger.error("Failed to fetch windows for " + item.getLabel() + ": " + task.getException().getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     private void openSettingsWindow() {
