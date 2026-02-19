@@ -40,9 +40,11 @@ public class DockController {
     private DockModel model;
     private Stage stage;
     private WindowPreviewPopup windowPreviewPopup;
-    private PauseTransition hideTimer;
+    private PauseTransition hideDebounce;
     private boolean isHoveringPopup = false;
     private Button currentHoverButton;
+    private Button popupOwnerButton;
+    private int hoverRequestId = 0;
 
     // variables for the enableDrag function
     private double xOffset = 0;
@@ -53,11 +55,20 @@ public class DockController {
         model = SaveAndLoadDockSettings.load();
 
         windowPreviewPopup = new WindowPreviewPopup();
-        // Increased delay to allow moving mouse from dock icon to popup
-        hideTimer = new PauseTransition(Duration.millis(500));
-        hideTimer.setOnFinished(e -> {
-            if (!isHoveringPopup) {
+        windowPreviewPopup.getContainer().setOnMouseEntered(e -> {
+            isHoveringPopup = true;
+            hideDebounce.stop();
+        });
+        windowPreviewPopup.getContainer().setOnMouseExited(e -> {
+            isHoveringPopup = false;
+            scheduleHide();
+        });
+
+        hideDebounce = new PauseTransition(Duration.millis(80));
+        hideDebounce.setOnFinished(e -> {
+            if (shouldHidePreview()) {
                 windowPreviewPopup.hide();
+                popupOwnerButton = null;
             }
         });
 
@@ -179,28 +190,26 @@ public class DockController {
     }
 
     private void setupHoverPreview(Button button, DockProgramItemModel item, Image icon) {
-        PauseTransition showDelay = new PauseTransition(Duration.millis(300));
-
         button.setOnMouseEntered(e -> {
             currentHoverButton = button;
-            hideTimer.stop();
-            if (windowPreviewPopup.isShowing()) {
+            hideDebounce.stop();
+            if (windowPreviewPopup.isShowing() && popupOwnerButton != button) {
                 windowPreviewPopup.hide();
+                popupOwnerButton = null;
             }
-            showDelay.setOnFinished(ev -> showWindowPreview(button, item, icon));
-            showDelay.playFromStart();
+            showWindowPreview(button, item, icon);
         });
 
         button.setOnMouseExited(e -> {
             if (currentHoverButton == button) {
                 currentHoverButton = null;
             }
-            showDelay.stop();
-            hideTimer.playFromStart();
+            scheduleHide();
         });
     }
 
     private void showWindowPreview(Button button, DockProgramItemModel item, Image icon) {
+        int requestId = ++hoverRequestId;
         Task<List<NativeWindowUtils.WindowInfo>> task = new Task<>() {
             @Override
             protected List<NativeWindowUtils.WindowInfo> call() throws Exception {
@@ -209,6 +218,9 @@ public class DockController {
         };
 
         task.setOnSucceeded(e -> {
+            if (requestId != hoverRequestId) {
+                return;
+            }
             List<NativeWindowUtils.WindowInfo> windows = task.getValue();
             if (currentHoverButton != button || !button.isHover()) {
                 return;
@@ -216,18 +228,11 @@ public class DockController {
             if (!windows.isEmpty()) {
                 windowPreviewPopup.updateContent(windows, icon, model);
                 windowPreviewPopup.showAbove(button);
+                popupOwnerButton = button;
 
-                // Also handle mouse over popup to prevent hiding
-                windowPreviewPopup.getContainer().setOnMouseEntered(ev -> {
-                    isHoveringPopup = true;
-                    hideTimer.stop();
-                });
-                windowPreviewPopup.getContainer().setOnMouseExited(ev -> {
-                    isHoveringPopup = false;
-                    hideTimer.playFromStart();
-                });
-            } else if (windowPreviewPopup.isShowing()) {
+            } else if (windowPreviewPopup.isShowing() && popupOwnerButton == button) {
                 windowPreviewPopup.hide();
+                popupOwnerButton = null;
             }
         });
 
@@ -236,6 +241,21 @@ public class DockController {
         });
 
         new Thread(task).start();
+    }
+
+    private void scheduleHide() {
+        hideDebounce.stop();
+        hideDebounce.playFromStart();
+    }
+
+    private boolean shouldHidePreview() {
+        if (isHoveringPopup) {
+            return false;
+        }
+        if (currentHoverButton == null) {
+            return true;
+        }
+        return !currentHoverButton.isHover();
     }
 
     private void openSettingsWindow() {
