@@ -41,6 +41,7 @@ public class DockController {
     private Stage stage;
     private WindowPreviewPopup windowPreviewPopup;
     private PauseTransition hideTimer;
+    private boolean isHoveringPopup = false;
 
     // variables for the enableDrag function
     private double xOffset = 0;
@@ -53,7 +54,11 @@ public class DockController {
         windowPreviewPopup = new WindowPreviewPopup();
         // Increased delay to allow moving mouse from dock icon to popup
         hideTimer = new PauseTransition(Duration.millis(500));
-        hideTimer.setOnFinished(e -> windowPreviewPopup.hide());
+        hideTimer.setOnFinished(e -> {
+            if (!isHoveringPopup) {
+                windowPreviewPopup.hide();
+            }
+        });
 
         enableDrag();
         updateDockUI();
@@ -202,8 +207,14 @@ public class DockController {
                 windowPreviewPopup.showAbove(button);
 
                 // Also handle mouse over popup to prevent hiding
-                windowPreviewPopup.getContainer().setOnMouseEntered(ev -> hideTimer.stop());
-                windowPreviewPopup.getContainer().setOnMouseExited(ev -> hideTimer.playFromStart());
+                windowPreviewPopup.getContainer().setOnMouseEntered(ev -> {
+                    isHoveringPopup = true;
+                    hideTimer.stop();
+                });
+                windowPreviewPopup.getContainer().setOnMouseExited(ev -> {
+                    isHoveringPopup = false;
+                    hideTimer.playFromStart();
+                });
             }
         });
 
