@@ -175,10 +175,14 @@ public class DockController {
                                 activePopup[0] = new WindowPreviewPopup(windows, imageView.getImage());
 
                                 // Keep popup open if mouse enters it
-                                activePopup[0].getContent().get(0).setOnMouseEntered(me -> hideDelay.stop());
+                                activePopup[0].getContent().get(0).setOnMouseEntered(me -> {
+                                    isHovering[0] = true; // Consider hovering popup as hovering context
+                                    hideDelay.stop();
+                                });
                                 activePopup[0].getContent().get(0).setOnMouseExited(me -> {
+                                    isHovering[0] = false;
                                     hideDelay.setOnFinished(ev -> {
-                                        if (activePopup[0] != null) {
+                                        if (!isHovering[0] && activePopup[0] != null) {
                                             activePopup[0].hide();
                                             activePopup[0] = null;
                                         }
@@ -201,10 +205,13 @@ public class DockController {
             });
 
             button.setOnMouseExited(e -> {
+                // Only mark not hovering if we haven't moved to the popup
+                // But JavaFX events are tricky. We assume we left. The hide delay handles the grace period.
                 isHovering[0] = false;
                 hoverDelay.stop();
                 hideDelay.setOnFinished(event -> {
-                    if (activePopup[0] != null) {
+                    // Check again inside the delay if we re-entered either the button or the popup
+                    if (!isHovering[0] && activePopup[0] != null) {
                         activePopup[0].hide();
                         activePopup[0] = null;
                     }

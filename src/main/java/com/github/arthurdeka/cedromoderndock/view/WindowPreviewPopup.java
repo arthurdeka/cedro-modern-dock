@@ -51,6 +51,7 @@ public class WindowPreviewPopup extends Popup {
         }
 
         this.getContent().add(content);
-        this.setAutoHide(true);
+        // Do not auto-hide on focus loss, we manage visibility manually
+        this.setAutoHide(false);
     }
 }
