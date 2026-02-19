@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
+import javafx.stage.Screen;
 
 import java.util.List;
 
@@ -137,9 +139,25 @@ public class WindowPreviewPopup extends Popup {
 
         double w = getWidth();
         double h = getHeight();
+        double gap = 8;
 
         setX(bounds.getMinX() + (bounds.getWidth() / 2) - (w / 2));
-        // Position immediately above the button with a smaller gap to allow easier mouse traversal
-        setY(bounds.getMinY() - h - 5);
+
+        Rectangle2D screenBounds = getScreenBounds(bounds);
+        double yAbove = bounds.getMinY() - h - gap;
+        double yBelow = bounds.getMaxY() + gap;
+
+        if (yAbove < screenBounds.getMinY() + gap) {
+            setY(yBelow);
+        } else {
+            setY(yAbove);
+        }
+    }
+
+    private Rectangle2D getScreenBounds(Bounds bounds) {
+        for (Screen screen : Screen.getScreensForRectangle(bounds)) {
+            return screen.getVisualBounds();
+        }
+        return Screen.getPrimary().getVisualBounds();
     }
 }
