@@ -24,6 +24,7 @@ public class WindowPreviewPopup extends Popup {
 
     private final VBox container;
     private Node currentTarget;
+    private Node currentDock;
     private final ChangeListener<Number> sizeListener = (obs, old, val) -> reposition();
 
     public WindowPreviewPopup() {
@@ -122,8 +123,9 @@ public class WindowPreviewPopup extends Popup {
         return container;
     }
 
-    public void showAbove(Node target) {
+    public void showAbove(Node target, Node dockContainer) {
         this.currentTarget = target;
+        this.currentDock = dockContainer;
         Bounds bounds = target.localToScreen(target.getBoundsInLocal());
 
         if (!isShowing()) {
@@ -139,13 +141,14 @@ public class WindowPreviewPopup extends Popup {
 
         double w = getWidth();
         double h = getHeight();
-        double gap = 8;
+        double gap = 5;
 
         setX(bounds.getMinX() + (bounds.getWidth() / 2) - (w / 2));
 
         Rectangle2D screenBounds = getScreenBounds(bounds);
-        double yAbove = bounds.getMinY() - h - gap;
-        double yBelow = bounds.getMaxY() + gap;
+        Bounds dockBounds = getDockBounds(bounds);
+        double yAbove = dockBounds.getMinY() - h - gap;
+        double yBelow = dockBounds.getMaxY() + gap;
 
         if (yAbove < screenBounds.getMinY() + gap) {
             setY(yBelow);
@@ -164,5 +167,13 @@ public class WindowPreviewPopup extends Popup {
             return screen.getVisualBounds();
         }
         return Screen.getPrimary().getVisualBounds();
+    }
+
+    private Bounds getDockBounds(Bounds fallbackBounds) {
+        if (currentDock == null) {
+            return fallbackBounds;
+        }
+        Bounds dockBounds = currentDock.localToScreen(currentDock.getBoundsInLocal());
+        return dockBounds != null ? dockBounds : fallbackBounds;
     }
 }

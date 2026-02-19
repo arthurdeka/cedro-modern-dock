@@ -227,7 +227,7 @@ public class DockController {
             }
             if (!windows.isEmpty()) {
                 windowPreviewPopup.updateContent(windows, icon, model);
-                windowPreviewPopup.showAbove(button);
+                windowPreviewPopup.showAbove(button, hBoxContainer);
                 popupOwnerButton = button;
 
             } else if (windowPreviewPopup.isShowing() && popupOwnerButton == button) {
