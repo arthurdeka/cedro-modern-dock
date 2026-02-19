@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Extracts the icon from executables (.exe) and saves it to a persistent cache folder in AppData.
+ * Extracts the icon from executables (.exe) and saves it to a persistent cache folder.
  * The extraction uses PowerShell and is only executed if the icon is not already in the cache.
  */
 public final class WindowsIconHandler {
@@ -20,7 +20,7 @@ public final class WindowsIconHandler {
     private WindowsIconHandler() {
     } // utilitário estático
 
-    // Diretório de cache persistente em %APPDATA%/CedroModernDock/iconsCache
+    // Persistent cache directory in ./cached (relative to application execution path)
     private static final Path CACHE_DIR = getCacheDirectory();
 
 
@@ -72,7 +72,7 @@ public final class WindowsIconHandler {
                 return null;
             }
 
-            Logger.info("[extractAndCacheIcon] Icon for " + exePath + " successfully extracted and cached at iconsCache");
+            Logger.info("[extractAndCacheIcon] Icon for " + exePath + " successfully extracted and cached at cached/");
             return cachedIconPath; // Return the path of the newly saved icon.
 
         } catch (IOException | InterruptedException | NoSuchAlgorithmException e) {
@@ -100,15 +100,11 @@ public final class WindowsIconHandler {
     }
 
     /**
-     * Returns the icons cache directory (creating AppData/CedroModernDock/iconsCache if it does not exist)
+     * Returns the icons cache directory (creating a "cached" folder in the application directory if it does not exist)
      */
     private static Path getCacheDirectory() {
         try {
-            String appData = System.getenv("APPDATA");
-            if (appData == null || appData.isEmpty()) {
-                Logger.error("AppData Not found.");
-            }
-            Path cacheDir = Paths.get(appData, "CedroModernDock", "iconsCache");
+            Path cacheDir = Paths.get("cached").toAbsolutePath();
             Files.createDirectories(cacheDir); // Creates the folder structure if it doesn't exist
             return cacheDir;
         } catch (IOException e) {
