@@ -88,7 +88,9 @@ public class DockController {
 
         for (DockItem item : model.getItems()) {
             Button button = createButton(item);
-            hBoxContainer.getChildren().add(button);
+            if (button != null) {
+                hBoxContainer.getChildren().add(button);
+            }
         }
 
         // resize DockView window to account for DockItem additions or removing
@@ -132,6 +134,7 @@ public class DockController {
             // if file does not exist
             if (Files.notExists(iconPath)) {
                 Logger.error("DockController - createButton - path for cached icon not found");
+                return null;
             }
 
             Image icon = new Image(iconPath.toUri().toString());
