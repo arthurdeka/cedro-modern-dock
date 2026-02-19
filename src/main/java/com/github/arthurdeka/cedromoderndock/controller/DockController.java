@@ -9,6 +9,7 @@ import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconHandler;
 import com.github.arthurdeka.cedromoderndock.view.WindowPreviewPopup;
 import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -165,6 +166,13 @@ public class DockController {
             button.setOnMouseEntered(e -> {
                 isHovering[0] = true;
                 hideDelay.stop();
+
+                // Scale Up immediately on hover
+                ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), button);
+                scaleUp.setToX(1.3);
+                scaleUp.setToY(1.3);
+                scaleUp.play();
+
                 hoverDelay.setOnFinished(event -> {
                     new Thread(() -> {
                         List<WindowInfo> windows = NativeWindowUtils.getAppWindows(item.getPath());
@@ -185,6 +193,12 @@ public class DockController {
                                         if (!isHovering[0] && activePopup[0] != null) {
                                             activePopup[0].hide();
                                             activePopup[0] = null;
+
+                                            // Reset scale when popup actually closes from popup exit
+                                            ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), button);
+                                            scaleDown.setToX(1.0);
+                                            scaleDown.setToY(1.0);
+                                            scaleDown.play();
                                         }
                                     });
                                     hideDelay.playFromStart();
@@ -206,14 +220,20 @@ public class DockController {
 
             button.setOnMouseExited(e -> {
                 // Only mark not hovering if we haven't moved to the popup
-                // But JavaFX events are tricky. We assume we left. The hide delay handles the grace period.
                 isHovering[0] = false;
                 hoverDelay.stop();
                 hideDelay.setOnFinished(event -> {
                     // Check again inside the delay if we re-entered either the button or the popup
-                    if (!isHovering[0] && activePopup[0] != null) {
-                        activePopup[0].hide();
-                        activePopup[0] = null;
+                    if (!isHovering[0]) {
+                        if (activePopup[0] != null) {
+                            activePopup[0].hide();
+                            activePopup[0] = null;
+                        }
+                        // Only scale down if we truly left and popup is closed
+                        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), button);
+                        scaleDown.setToX(1.0);
+                        scaleDown.setToY(1.0);
+                        scaleDown.play();
                     }
                 });
                 hideDelay.playFromStart();
