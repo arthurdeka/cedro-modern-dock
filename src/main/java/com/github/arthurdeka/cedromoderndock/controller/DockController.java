@@ -3,8 +3,13 @@ package com.github.arthurdeka.cedromoderndock.controller;
 import com.github.arthurdeka.cedromoderndock.App;
 import com.github.arthurdeka.cedromoderndock.model.*;
 import com.github.arthurdeka.cedromoderndock.util.Logger;
+import com.github.arthurdeka.cedromoderndock.util.NativeWindowUtils;
+import com.github.arthurdeka.cedromoderndock.util.NativeWindowUtils.WindowInfo;
 import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconHandler;
+import com.github.arthurdeka.cedromoderndock.view.WindowPreviewPopup;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -149,6 +155,63 @@ public class DockController {
             button.setGraphic(imageView);
 
             button.setOnAction(e -> item.performAction());
+
+            // Hover Logic for Window Previews
+            PauseTransition hoverDelay = new PauseTransition(Duration.millis(400));
+            PauseTransition hideDelay = new PauseTransition(Duration.millis(200));
+            final WindowPreviewPopup[] activePopup = {null};
+            final boolean[] isHovering = {false};
+
+            button.setOnMouseEntered(e -> {
+                isHovering[0] = true;
+                hideDelay.stop();
+                hoverDelay.setOnFinished(event -> {
+                    new Thread(() -> {
+                        List<WindowInfo> windows = NativeWindowUtils.getAppWindows(item.getPath());
+                        if (!windows.isEmpty()) {
+                            Platform.runLater(() -> {
+                                if (!isHovering[0]) return; // Check if still hovering
+                                if (activePopup[0] != null) activePopup[0].hide();
+                                activePopup[0] = new WindowPreviewPopup(windows, imageView.getImage());
+
+                                // Keep popup open if mouse enters it
+                                activePopup[0].getContent().get(0).setOnMouseEntered(me -> hideDelay.stop());
+                                activePopup[0].getContent().get(0).setOnMouseExited(me -> {
+                                    hideDelay.setOnFinished(ev -> {
+                                        if (activePopup[0] != null) {
+                                            activePopup[0].hide();
+                                            activePopup[0] = null;
+                                        }
+                                    });
+                                    hideDelay.playFromStart();
+                                });
+
+                                double x = button.localToScreen(button.getBoundsInLocal()).getMinX();
+                                double y = button.localToScreen(button.getBoundsInLocal()).getMinY();
+
+                                // Show slightly above the button (assuming dock is bottom)
+                                activePopup[0].show(button, x, y);
+                                double height = activePopup[0].getContent().get(0).getBoundsInLocal().getHeight();
+                                activePopup[0].setY(y - height - 15);
+                            });
+                        }
+                    }).start();
+                });
+                hoverDelay.playFromStart();
+            });
+
+            button.setOnMouseExited(e -> {
+                isHovering[0] = false;
+                hoverDelay.stop();
+                hideDelay.setOnFinished(event -> {
+                    if (activePopup[0] != null) {
+                        activePopup[0].hide();
+                        activePopup[0] = null;
+                    }
+                });
+                hideDelay.playFromStart();
+            });
+
             return button;
 
         } else {
