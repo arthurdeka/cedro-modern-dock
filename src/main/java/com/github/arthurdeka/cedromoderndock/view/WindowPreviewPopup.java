@@ -3,7 +3,6 @@ package com.github.arthurdeka.cedromoderndock.view;
 import com.github.arthurdeka.cedromoderndock.model.DockModel;
 import com.github.arthurdeka.cedromoderndock.util.NativeWindowUtils;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,6 +24,7 @@ public class WindowPreviewPopup extends Popup {
     private final VBox container;
     private Node currentTarget;
     private Node currentDock;
+    // Reposition whenever popup size changes (content can grow/shrink).
     private final ChangeListener<Number> sizeListener = (obs, old, val) -> reposition();
 
     public WindowPreviewPopup() {
@@ -44,7 +44,7 @@ public class WindowPreviewPopup extends Popup {
     public void updateContent(List<NativeWindowUtils.WindowInfo> windows, Image appIcon, DockModel model) {
         container.getChildren().clear();
 
-        // Apply style from model
+        // Apply style from dock model so the popup matches the dock theme.
         String style = String.format(
                 "-fx-background-color: rgba(%s %s); -fx-background-radius: %s;",
                 model.getDockColorRGB(),
@@ -53,6 +53,7 @@ public class WindowPreviewPopup extends Popup {
         );
         container.setStyle(style);
 
+        // Choose a readable text color based on dock background brightness.
         Color textColor = getTextColorForBackground(model.getDockColorRGB());
 
         for (NativeWindowUtils.WindowInfo window : windows) {
@@ -70,7 +71,7 @@ public class WindowPreviewPopup extends Popup {
                 int r = Integer.parseInt(parts[0]);
                 int g = Integer.parseInt(parts[1]);
                 int b = Integer.parseInt(parts[2]);
-                // Calculate brightness
+                // Calculate brightness to choose black/white contrast.
                 double brightness = (r * 0.299 + g * 0.587 + b * 0.114);
                 return brightness > 128 ? Color.BLACK : Color.WHITE;
             }
@@ -100,7 +101,7 @@ public class WindowPreviewPopup extends Popup {
 
         item.getChildren().addAll(iconView, titleLabel);
 
-        // Hover effect
+        // Hover effect for better visual feedback.
         item.setOnMouseEntered(e -> {
             item.setStyle("-fx-background-color: rgba(255, 255, 255, 0.2); -fx-background-radius: 5; -fx-cursor: hand;");
             titleLabel.setTextFill(Color.WHITE); // Always white on hover for better contrast against hover bg
@@ -128,6 +129,7 @@ public class WindowPreviewPopup extends Popup {
         this.currentDock = dockContainer;
         Bounds bounds = target.localToScreen(target.getBoundsInLocal());
 
+        // Initial show, then reposition to avoid flicker.
         if (!isShowing()) {
             this.show(target, bounds.getMinX(), bounds.getMinY());
         }
@@ -143,6 +145,7 @@ public class WindowPreviewPopup extends Popup {
         double h = getHeight();
         double gap = 5;
 
+        // Center horizontally over the target icon.
         setX(bounds.getMinX() + (bounds.getWidth() / 2) - (w / 2));
 
         Rectangle2D screenBounds = getScreenBounds(bounds);
@@ -150,6 +153,7 @@ public class WindowPreviewPopup extends Popup {
         double yAbove = dockBounds.getMinY() - h - gap;
         double yBelow = dockBounds.getMaxY() + gap;
 
+        // If there's no room above the dock, place below instead.
         if (yAbove < screenBounds.getMinY() + gap) {
             setY(yBelow);
         } else {
@@ -158,6 +162,7 @@ public class WindowPreviewPopup extends Popup {
     }
 
     private Rectangle2D getScreenBounds(Bounds bounds) {
+        // Use the screen containing the target bounds.
         for (Screen screen : Screen.getScreensForRectangle(
                 bounds.getMinX(),
                 bounds.getMinY(),

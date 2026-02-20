@@ -13,6 +13,7 @@ import java.util.List;
 
 public class NativeWindowUtils {
 
+    // Minimal info required by the popup to activate and label a window.
     public record WindowInfo(HWND hwnd, String title) {}
 
     public static List<WindowInfo> getOpenWindows(String executablePath) {
@@ -21,6 +22,7 @@ public class NativeWindowUtils {
             return windows;
         }
 
+        // Normalize the target executable path so comparisons are stable.
         final Path targetPath = Paths.get(executablePath).toAbsolutePath().normalize();
 
         User32.INSTANCE.EnumWindows((hWnd, arg1) -> {
@@ -29,12 +31,12 @@ public class NativeWindowUtils {
                 User32.INSTANCE.GetWindowText(hWnd, buffer, 1024);
                 String title = new String(buffer).trim();
 
-                // Skip windows without title or hidden ones (sometimes invisible windows report visible via IsWindowVisible but have empty title/rect)
+                // Skip windows without title or hidden ones (some invisible windows report visible but have empty title/rect).
                 if (title.isEmpty()) {
                     return true;
                 }
 
-                // Check if it's the correct process
+                // Keep only windows belonging to the executable path requested.
                 if (isWindowFromExecutable(hWnd, targetPath)) {
                     windows.add(new WindowInfo(hWnd, title));
                 }
@@ -50,6 +52,7 @@ public class NativeWindowUtils {
         User32.INSTANCE.GetWindowThreadProcessId(hWnd, pidRef);
         int pid = pidRef.getValue();
 
+        // Query the process image path to match it against the target executable.
         WinNT.HANDLE process = Kernel32.INSTANCE.OpenProcess(
                 WinNT.PROCESS_QUERY_LIMITED_INFORMATION,
                 false,
@@ -63,6 +66,7 @@ public class NativeWindowUtils {
                 if (Kernel32.INSTANCE.QueryFullProcessImageName(process, 0, pathBuffer, size)) {
                     String processPathStr = new String(pathBuffer, 0, size.getValue());
                     Path processPath = Paths.get(processPathStr).toAbsolutePath().normalize();
+                    // Prefer full path match, but fall back to filename match for edge cases.
                     if (isSameExecutable(processPath, targetPath)) {
                         return true;
                     }
@@ -79,16 +83,19 @@ public class NativeWindowUtils {
             return false;
         }
 
+        // Exact path match.
         if (processPath.equals(targetPath)) {
             return true;
         }
 
+        // Case-insensitive path match (Windows path comparisons).
         String processStr = normalizePathString(processPath);
         String targetStr = normalizePathString(targetPath);
         if (processStr.equalsIgnoreCase(targetStr)) {
             return true;
         }
 
+        // Fallback: match only the filename when the full path is not comparable.
         Path processFile = processPath.getFileName();
         Path targetFile = targetPath.getFileName();
         if (processFile != null && targetFile != null) {
@@ -100,6 +107,7 @@ public class NativeWindowUtils {
 
     private static String normalizePathString(Path path) {
         String value = path.toString();
+        // Strip Windows extended-length path prefix if present.
         if (value.startsWith("\\\\?\\")) {
             value = value.substring(4);
         }
