@@ -5,6 +5,12 @@ import com.github.arthurdeka.cedromoderndock.model.*;
 import com.github.arthurdeka.cedromoderndock.util.Logger;
 import com.github.arthurdeka.cedromoderndock.util.SaveAndLoadDockSettings;
 import com.github.arthurdeka.cedromoderndock.util.WindowsIconHandler;
+import com.github.arthurdeka.cedromoderndock.util.NativeWindowUtils;
+import com.github.arthurdeka.cedromoderndock.view.WindowPreviewPopup;
+import javafx.animation.PauseTransition;
+import javafx.concurrent.Task;
+import javafx.util.Duration;
+import javafx.geometry.Bounds;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,6 +39,12 @@ public class DockController {
 
     private DockModel model;
     private Stage stage;
+    private WindowPreviewPopup windowPreviewPopup;
+    private PauseTransition hideDebounce;
+    private boolean isHoveringPopup = false;
+    private Button currentHoverButton;
+    private Button popupOwnerButton;
+    private int hoverRequestId = 0;
 
     // variables for the enableDrag function
     private double xOffset = 0;
@@ -41,6 +53,24 @@ public class DockController {
     // Run when FXML is loaded
     public void handleInitialization() {
         model = SaveAndLoadDockSettings.load();
+
+        windowPreviewPopup = new WindowPreviewPopup();
+        windowPreviewPopup.getContainer().setOnMouseEntered(e -> {
+            isHoveringPopup = true;
+            hideDebounce.stop();
+        });
+        windowPreviewPopup.getContainer().setOnMouseExited(e -> {
+            isHoveringPopup = false;
+            scheduleHide();
+        });
+
+        hideDebounce = new PauseTransition(Duration.millis(80));
+        hideDebounce.setOnFinished(e -> {
+            if (shouldHidePreview()) {
+                windowPreviewPopup.hide();
+                popupOwnerButton = null;
+            }
+        });
 
         enableDrag();
         updateDockUI();
@@ -127,7 +157,7 @@ public class DockController {
             button.setOnAction(e -> item.performAction());
             return button;
 
-        // Logic for DockProgramItemModel runs on a background thread
+            // Logic for DockProgramItemModel runs on a background thread
         } else if (item instanceof DockProgramItemModel) {
             Path iconPath = WindowsIconHandler.getCachedIconPath(item.getPath());
 
@@ -149,11 +179,83 @@ public class DockController {
             button.setGraphic(imageView);
 
             button.setOnAction(e -> item.performAction());
+
+            setupHoverPreview(button, (DockProgramItemModel) item, icon);
+
             return button;
 
         } else {
             return null;
         }
+    }
+
+    private void setupHoverPreview(Button button, DockProgramItemModel item, Image icon) {
+        button.setOnMouseEntered(e -> {
+            currentHoverButton = button;
+            hideDebounce.stop();
+            if (windowPreviewPopup.isShowing() && popupOwnerButton != button) {
+                windowPreviewPopup.hide();
+                popupOwnerButton = null;
+            }
+            showWindowPreview(button, item, icon);
+        });
+
+        button.setOnMouseExited(e -> {
+            if (currentHoverButton == button) {
+                currentHoverButton = null;
+            }
+            scheduleHide();
+        });
+    }
+
+    private void showWindowPreview(Button button, DockProgramItemModel item, Image icon) {
+        int requestId = ++hoverRequestId;
+        Task<List<NativeWindowUtils.WindowInfo>> task = new Task<>() {
+            @Override
+            protected List<NativeWindowUtils.WindowInfo> call() throws Exception {
+                return NativeWindowUtils.getOpenWindows(item.getPath());
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            if (requestId != hoverRequestId) {
+                return;
+            }
+            List<NativeWindowUtils.WindowInfo> windows = task.getValue();
+            if (currentHoverButton != button || !button.isHover()) {
+                return;
+            }
+            if (!windows.isEmpty()) {
+                windowPreviewPopup.updateContent(windows, icon, model);
+                windowPreviewPopup.showAbove(button, hBoxContainer);
+                popupOwnerButton = button;
+
+            } else if (windowPreviewPopup.isShowing() && popupOwnerButton == button) {
+                windowPreviewPopup.hide();
+                popupOwnerButton = null;
+            }
+        });
+
+        task.setOnFailed(e -> {
+            Logger.error("Failed to fetch windows for " + item.getLabel() + ": " + task.getException().getMessage());
+        });
+
+        new Thread(task).start();
+    }
+
+    private void scheduleHide() {
+        hideDebounce.stop();
+        hideDebounce.playFromStart();
+    }
+
+    private boolean shouldHidePreview() {
+        if (isHoveringPopup) {
+            return false;
+        }
+        if (currentHoverButton == null) {
+            return true;
+        }
+        return !currentHoverButton.isHover();
     }
 
     private void openSettingsWindow() {
